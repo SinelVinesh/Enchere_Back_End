@@ -1,6 +1,7 @@
 package mg.cloud.enchere_back_end.Controller;
 
 import mg.cloud.enchere_back_end.Model.Admin;
+import mg.cloud.enchere_back_end.Response.ErrorResponse;
 import mg.cloud.enchere_back_end.Service.AdminService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +30,8 @@ public class AuthentificationAdminController {
         if(token != null){
             return new ResponseEntity<>(responseData, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("error 404 user not found",HttpStatus.NOT_FOUND);
+            ErrorResponse response = new ErrorResponse(404,"admin not found");
+            return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
         }
     }
 }

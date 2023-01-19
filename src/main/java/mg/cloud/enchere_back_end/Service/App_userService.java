@@ -20,8 +20,18 @@ public class App_userService {
     }
 
 
+
     public String login(App_user app_user) {
         Optional<App_user> data = app_userRepository.findByUsernameOrEmailAndPassword(app_user.getUsername(),app_user.getEmail() ,app_user.getPassword());
         return data.map(app_user_tokenService::generateToken).orElse(null);
     }
+
+    public App_user saveApp_user(App_user user) {
+        return app_userRepository.save(user);
+    }
+
+    public App_user findById(Long id){
+        return app_userRepository.findById(id).get();
+    }
+
 }

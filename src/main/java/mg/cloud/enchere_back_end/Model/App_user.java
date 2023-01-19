@@ -36,7 +36,7 @@ public class App_user {
 
     @Min(0)
     @Column(name = "account_balance",nullable = false)
-    private Float account_balance;
+    private float account_balance;
 
 }
 

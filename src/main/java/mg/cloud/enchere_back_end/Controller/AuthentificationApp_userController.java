@@ -2,6 +2,7 @@ package mg.cloud.enchere_back_end.Controller;
 
 import mg.cloud.enchere_back_end.Model.Admin;
 import mg.cloud.enchere_back_end.Model.App_user;
+import mg.cloud.enchere_back_end.Response.ErrorResponse;
 import mg.cloud.enchere_back_end.Service.App_userService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +31,8 @@ public class AuthentificationApp_userController {
         if(token != null){
             return new ResponseEntity<>(responseData, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("error 404 user not found",HttpStatus.NOT_FOUND);
+            ErrorResponse response = new ErrorResponse(404,"user not found");
+            return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
         }
     }
 }
