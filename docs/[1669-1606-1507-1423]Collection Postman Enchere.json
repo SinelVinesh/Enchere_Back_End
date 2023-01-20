@@ -1,0 +1,957 @@
+{
+	"info": {
+		"_postman_id": "fe4f4b9a-4523-4e4c-a759-ba519290a48e",
+		"name": "Enchere",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "Enchere",
+					"item": [
+						{
+							"name": "Supprimer une enchère",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base}}/auctions/:id",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"auctions",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Catégorie",
+					"item": [
+						{
+							"name": "Ajouter une catégorie",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\":\"Technologie\"\r\n}"
+								},
+								"url": {
+									"raw": "{{base}}/categories",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"categories"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Modifier une catégorie",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\":\"Technologie\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base}}/categories/:id",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"categories",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Supprimer une catégorie",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base}}/categories/:id",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"categories",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Détail d'une catégorie",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base}}/categories/:id",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"categories",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Paramètre",
+					"item": [
+						{
+							"name": "Ajouter une paramètre",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"key\":\"token-duration\",\r\n    \"value\":\"3600\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base}}/settings/:id",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"settings",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Modifier une paramètre",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"key\":\"token-duration\",\r\n    \"value\":\"4200\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base}}/settings/:id",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"settings",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Supprimer une paramètre",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base}}/settings/:id",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"settings",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Détail d'un paramètre",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base}}/settings/:id",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"settings",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Statistiques",
+					"item": [
+						{
+							"name": "Statistiques sur les chiffre d'affaire",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base}}/statistics/turnover",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"statistics",
+										"turnover"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Statistiques sur les enchères",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base}}/statistics/auctions",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"statistics",
+										"auctions"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Rechargement de compte",
+					"item": [
+						{
+							"name": "Modification de l'état d'un rechargement de compte",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\":1,\r\n    \"state\": {\r\n        \"id\":1\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base}}/reloads/validations",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"reloads",
+										"validations"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Liste des rechargements",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base}}/reloads",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"reloads"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Utllisateur",
+					"item": [
+						{
+							"name": "Rechargement de compte",
+							"item": [
+								{
+									"name": "Enregistrement d'une demande rechargement de compte",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"user\":{\r\n        \"id\":1\r\n    },\r\n    \"amount\": 15000\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base}}/reloads/request",
+											"host": [
+												"{{base}}"
+											],
+											"path": [
+												"reloads",
+												"request"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Recherche",
+							"item": [
+								{
+									"name": "Recherche Simple",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base}}/auctions/search?q",
+											"host": [
+												"{{base}}"
+											],
+											"path": [
+												"auctions",
+												"search"
+											],
+											"query": [
+												{
+													"key": "q",
+													"value": null
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Recherche Avancée",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base}}/auctions/search?q&start-date&end-date&min-price&max-price&cats&users&status",
+											"host": [
+												"{{base}}"
+											],
+											"path": [
+												"auctions",
+												"search"
+											],
+											"query": [
+												{
+													"key": "q",
+													"value": null
+												},
+												{
+													"key": "start-date",
+													"value": null
+												},
+												{
+													"key": "end-date",
+													"value": null
+												},
+												{
+													"key": "min-price",
+													"value": null
+												},
+												{
+													"key": "max-price",
+													"value": null
+												},
+												{
+													"key": "cats",
+													"value": null
+												},
+												{
+													"key": "users",
+													"value": null
+												},
+												{
+													"key": "status",
+													"value": null
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Liste des utilisateurs",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base}}/users",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Détail d'un utilisateur",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base}}/users/:id",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"users",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Liste des administrateurs",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base}}/adminis",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"adminis"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Détail d'un administrateur",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base}}/admins/:id",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"admins",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Modification d'un administrateur",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\":\"JeanRkt\",\r\n    \"password\":\"12345\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base}}/users/:id",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"users",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "New Request",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Connexion",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\":\"Jean\",\r\n    \"password\":123\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "auctions-app.up.railway.app/admin/login",
+							"host": [
+								"auctions-app",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"admin",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Enchère",
+			"item": [
+				{
+					"name": "Liste des enchères",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{base}}}}/auctions",
+							"host": [
+								"{{base}}}}"
+							],
+							"path": [
+								"auctions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Détail d'une enchère",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/auctions/:id",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"auctions",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Modifier une enchère",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "default",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\":\"Chaussure Nike\",\r\n    \"description\":\"Chaussure pointure 38, neuf et original, couleur: noir et rouge\",\r\n    \"category\": {\r\n        \"id\":1\r\n    },\r\n    \"pictures\": [\r\n        \"base64img1\",\r\n        \"base64img2\"\r\n    ],\r\n    \"startDate\":\"2022-01-13T14:00:00\",\r\n    \"startPrice\":165000.0,\r\n    \"bidStep\": 10000\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/auctions/:id",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"auctions",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Enchère",
+					"item": [
+						{
+							"name": "Rencherir",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"user\": {\r\n        \"id\": 1\r\n    },\r\n    \"auction\": {\r\n        \"id\": 1\r\n    },\r\n    \"amount\": 145000\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base}}/auctions/bid",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"auctions",
+										"bid"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Créer une enchère",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"user\": {\r\n        \"id\": 1\r\n    },\r\n    \"title\":\"Chaussure Nike\",\r\n    \"description\":\"Chaussure pointure 38, neuf et original, couleur: noir et rouge\",\r\n    \"category\": {\r\n        \"id\":1\r\n    },\r\n    \"pictures\": [\r\n        \"base64img1\",\r\n        \"base64img2\"\r\n    ],\r\n    \"startDate\":\"2022-01-13T14:00:00\",\r\n    \"startPrice\":165000.0,\r\n    \"bidStep\": 10000\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base}}/auctions",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"auctions"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Connexion",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\":\"Jean\",\r\n    \"password\":123\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/user/login",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"user",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Inscription",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\":\"Jean\",\r\n    \"password\":123,\r\n    \"email\":\"JeanRkt@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/user/register",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"user",
+								"register"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Paramètre",
+			"item": [
+				{
+					"name": "Liste des paramètre",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/settings",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"settings"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Catégorie",
+			"item": [
+				{
+					"name": "Liste des catégories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/categories",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"categories"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base",
+			"value": "http://localhost:8080",
+			"type": "default"
+		},
+		{
+			"key": "token",
+			"value": "a04b4b4400c0545add9a30019ebbb1d8cd32ca9b",
+			"type": "default"
+		}
+	]
+}
