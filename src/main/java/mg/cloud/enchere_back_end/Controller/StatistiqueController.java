@@ -2,7 +2,7 @@ package mg.cloud.enchere_back_end.Controller;
 
 import mg.cloud.enchere_back_end.Model.Auction;
 import mg.cloud.enchere_back_end.Model.DailyAuction;
-import mg.cloud.enchere_back_end.Response.ErrorResponse;
+import mg.cloud.enchere_back_end.response.Response;
 import mg.cloud.enchere_back_end.Service.AuctionService;
 import mg.cloud.enchere_back_end.Service.StatistiqueService;
 import org.springframework.http.HttpStatus;
@@ -37,7 +37,7 @@ public class StatistiqueController {
         if(dailyAuctionList !=null){
             return new ResponseEntity<>(responseData, HttpStatus.OK);
         }else {
-            ErrorResponse response = new ErrorResponse(404,"no Sales statistics");
+            Response response = new Response("no Sales statistics");
             return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
         }
     }
@@ -59,7 +59,7 @@ public class StatistiqueController {
             return new ResponseEntity<>(responseData, HttpStatus.OK);
         }
         catch (Exception e){
-            ErrorResponse response = new ErrorResponse(404,"no Auction statistics");
+            Response response = new Response("no Auction statistics");
             return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
         }
     }

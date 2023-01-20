@@ -3,7 +3,7 @@ package mg.cloud.enchere_back_end.Controller;
 import mg.cloud.enchere_back_end.Model.App_user_recharge_request;
 import mg.cloud.enchere_back_end.Model.App_user_recharge_state_history;
 import mg.cloud.enchere_back_end.Model.Recharge_state;
-import mg.cloud.enchere_back_end.Response.ErrorResponse;
+import mg.cloud.enchere_back_end.response.Response;
 import mg.cloud.enchere_back_end.Service.App_user_recharge_requestService;
 import mg.cloud.enchere_back_end.Service.App_user_recharge_state_historyService;
 import mg.cloud.enchere_back_end.Service.Recharge_StateService;
@@ -47,7 +47,7 @@ public class App_user_recharge_requestController {
 
                 return new ResponseEntity<>(appUserRechargeRequest, HttpStatus.CREATED);
         } catch (Exception e) {
-            ErrorResponse response = new ErrorResponse(500,"failed to save the recharge request");
+            Response response = new Response("failed to save the recharge request");
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

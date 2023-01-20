@@ -2,7 +2,7 @@ package mg.cloud.enchere_back_end.Controller;
 
 import mg.cloud.enchere_back_end.Model.Admin;
 import mg.cloud.enchere_back_end.Model.App_user;
-import mg.cloud.enchere_back_end.Response.ErrorResponse;
+import mg.cloud.enchere_back_end.response.Response;
 import mg.cloud.enchere_back_end.Service.App_userService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,17 +28,17 @@ public class AuthentificationApp_userController {
         if(token != null){
             return new ResponseEntity<>(responseData, HttpStatus.OK);
         } else {
-            ErrorResponse response = new ErrorResponse(404,"user not found");
+            Response response = new Response("user not found");
             return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
         }
     }
     @GetMapping("/logout")
     public ResponseEntity<?> logout(@RequestHeader("token") String token) {
         if(app_userService.logout(token)) {
-            ErrorResponse response = new ErrorResponse(200, "successfully logout");
+            Response response = new Response("successfully logout");
             return new ResponseEntity<>(response,HttpStatus.OK);
         } else {
-            ErrorResponse response = new ErrorResponse(500, "failed to logout");
+            Response response = new Response("failed to logout");
             return new ResponseEntity<>(response,HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

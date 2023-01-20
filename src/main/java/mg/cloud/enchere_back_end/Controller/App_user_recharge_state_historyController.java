@@ -1,7 +1,7 @@
 package mg.cloud.enchere_back_end.Controller;
 
 import mg.cloud.enchere_back_end.Model.*;
-import mg.cloud.enchere_back_end.Response.ErrorResponse;
+import mg.cloud.enchere_back_end.response.Response;
 import mg.cloud.enchere_back_end.Service.App_userService;
 import mg.cloud.enchere_back_end.Service.App_user_recharge_requestService;
 import mg.cloud.enchere_back_end.Service.App_user_recharge_state_historyService;
@@ -41,7 +41,7 @@ public class App_user_recharge_state_historyController{
             app_user_recharge_state_historyService.saveApp_user_recharge_state_history(app_user_recharge_state_history);
             return new ResponseEntity<>(app_user_recharge_state_history, HttpStatus.CREATED);
         }catch(Exception e){
-            ErrorResponse response = new ErrorResponse(500,"failed to cancel the recharge request");
+            Response response = new Response("failed to cancel the recharge request");
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -64,7 +64,7 @@ public class App_user_recharge_state_historyController{
             app_userService.saveApp_user(user);
             return new ResponseEntity<>(app_user_recharge_state_history, HttpStatus.CREATED);
         }catch(Exception e){
-            ErrorResponse response = new ErrorResponse(500,"failed to cancel the recharge request");
+            Response response = new Response("failed to cancel the recharge request");
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -76,7 +76,7 @@ public class App_user_recharge_state_historyController{
             responseData.put("reloads",app_user_recharge_state_histories);
             return new ResponseEntity<>(responseData, HttpStatus.OK);
         }else{
-            ErrorResponse response = new ErrorResponse(500,"no recharge request");
+            Response response = new Response("no recharge request");
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 

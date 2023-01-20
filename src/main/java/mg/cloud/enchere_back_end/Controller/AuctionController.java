@@ -1,26 +1,39 @@
 package mg.cloud.enchere_back_end.Controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import mg.cloud.enchere_back_end.Model.App_user;
+import mg.cloud.enchere_back_end.Model.Auction;
 import mg.cloud.enchere_back_end.Model.Bid_history;
 import mg.cloud.enchere_back_end.Model.V_app_user;
-import mg.cloud.enchere_back_end.Response.ErrorResponse;
+import mg.cloud.enchere_back_end.Repository.AuctionRepository;
 import mg.cloud.enchere_back_end.Service.App_userService;
 import mg.cloud.enchere_back_end.Service.AuctionService;
+import mg.cloud.enchere_back_end.Service.CrudService;
+import mg.cloud.enchere_back_end.response.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/auction")
 public class AuctionController {
     private final AuctionService auctionService;
     private final App_userService app_userService;
-
-    public AuctionController(AuctionService auctionService, App_userService app_userService) {
+    private final CrudService<Auction,Long> crudService;
+    private final AuctionRepository auctionRepository;
+    public AuctionController(
+            AuctionService auctionService,
+            App_userService app_userService,
+            CrudService<Auction, Long> crudService,
+            AuctionRepository auctionRepository
+    ) {
         this.auctionService = auctionService;
         this.app_userService = app_userService;
+        this.crudService = crudService;
+        this.auctionRepository = auctionRepository;
     }
 
     @PostMapping("/bid/{app_userid}&{bidid}&{amount}&{date}")
@@ -68,9 +81,18 @@ public class AuctionController {
                 }
             }
         }catch (Exception e){
-            ErrorResponse response = new ErrorResponse(404, e.getMessage());
+            Response response = new Response(e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(bid_history, HttpStatus.OK);
+    }
+
+    @RequestMapping(value={"/auctions","/auctions/{id}"})
+    public ResponseEntity<Response> crudAuction(
+            @PathVariable("id") Optional<Long> id,
+            @RequestBody Optional<Auction> auction,
+            HttpServletRequest request) {
+        Auction data = auction.orElse(null);
+        return crudService.handle(request.getMethod(), auctionRepository, id, data);
     }
 }
