@@ -34,4 +34,8 @@ public class App_userService {
         return app_userRepository.findById(id).get();
     }
 
+    public boolean logout(String token) {
+        return app_user_tokenService.removeToken(token);
+    }
+
 }

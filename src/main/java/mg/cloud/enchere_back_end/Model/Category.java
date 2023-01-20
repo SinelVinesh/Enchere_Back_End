@@ -1,5 +1,6 @@
 package mg.cloud.enchere_back_end.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import lombok.ToString;
 @ToString
 @RequiredArgsConstructor
 @Table(name = "category")
+@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -1,5 +1,6 @@
 package mg.cloud.enchere_back_end.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import javax.validation.constraints.*;
 import lombok.Getter;
@@ -14,6 +15,7 @@ import javax.validation.constraints.Pattern;
 @ToString
 @RequiredArgsConstructor
 @Table(name = "app_user")
+@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
 public class App_user {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -32,4 +32,13 @@ public class App_user_tokenService {
         app_user_tokenRepository.save(token);
         return hash;
     }
+    public boolean removeToken(String token) {
+        try {
+            app_user_tokenRepository.deleteByValue(token);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

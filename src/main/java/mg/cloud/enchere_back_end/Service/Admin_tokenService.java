@@ -30,4 +30,14 @@ public class Admin_tokenService {
             admin_tokenRepository.save(token);
             return hash;
     }
+
+    public boolean removeToken(String token) {
+        try {
+            admin_tokenRepository.deleteByValue(token);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

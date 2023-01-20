@@ -25,7 +25,7 @@ public class AuctionController {
 
     @PostMapping("/bid/{app_userid}&{bidid}&{amount}&{date}")
     public ResponseEntity<?> bid(@PathVariable("app_userid") Long app_userid,@PathVariable("bidid") Long bidid,@PathVariable("amount") float amount,@PathVariable("date") Timestamp date){
-
+        auctionService.closedAuction();
         App_user user = app_userService.findById(app_userid);
         V_app_user v_app_user = auctionService.getV_app_user(user.getId());
         if(v_app_user==null){
@@ -33,7 +33,6 @@ public class AuctionController {
             v_app_user.setUser(user);
             v_app_user.setMoney_can_use(user.getAccount_balance());
         }
-                //user.setAccount_balance(user.getAccount_balance()-amount);
 
         Bid_history bidHistorySecondToLast = auctionService.getSecondToLastBid(bidid);
         App_user userSecondToLast = null;

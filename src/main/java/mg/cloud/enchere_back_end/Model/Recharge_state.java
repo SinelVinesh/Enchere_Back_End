@@ -1,5 +1,6 @@
 package mg.cloud.enchere_back_end.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import lombok.ToString;
 @ToString
 @RequiredArgsConstructor
 @Table(name = "recharge_state")
+@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
 public class Recharge_state {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -20,6 +22,5 @@ public class Recharge_state {
 
     @Column(name = "description", nullable = false)
     private String description;
-
 
 }

@@ -26,12 +26,10 @@ public class App_user_recharge_state_history {
 
     @ManyToOne
     @JoinColumn(name = "app_user_recharge_requestid")
-    @JsonBackReference
     private App_user_recharge_request appUserRechargeRequest;
 
     @ManyToOne
     @JoinColumn(name = "recharge_stateid")
-    @JsonBackReference
     private Recharge_state rechargeState;
 
 }

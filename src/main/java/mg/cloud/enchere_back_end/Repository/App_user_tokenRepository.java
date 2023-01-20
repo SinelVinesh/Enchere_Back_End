@@ -12,4 +12,7 @@ public interface App_user_tokenRepository  extends JpaRepository<App_user_token,
 
     @Transactional
     void deleteAllByUserId(Long App_userId);
+
+    @Transactional
+    void deleteByValue(String token);
 }

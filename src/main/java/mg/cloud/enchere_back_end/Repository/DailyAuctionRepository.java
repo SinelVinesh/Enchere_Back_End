@@ -1,5 +1,6 @@
 package mg.cloud.enchere_back_end.Repository;
 
+import mg.cloud.enchere_back_end.Model.Auction;
 import mg.cloud.enchere_back_end.Model.DailyAuction;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,7 +12,7 @@ public interface DailyAuctionRepository extends JpaRepository<DailyAuction,Long>
     @Query(value = "SELECT\n" +
             "(ROW_NUMBER() OVER (ORDER BY DATE(A.END_DATE))) AS ID,\n" +
             "  DATE(A.END_DATE) AS \"Date\",\n" +
-            "  Count(DATE(A.END_DATE))    AS AMOUNT\n" +
+            "  SUM(b.amount)    AS AMOUNT\n" +
             "FROM\n" +
             "  BID_HISTORY B\n" +
             "  JOIN AUCTION A\n" +
@@ -54,17 +55,4 @@ public interface DailyAuctionRepository extends JpaRepository<DailyAuction,Long>
             "  DATE(A.END_DATE) > NOW() GROUP BY  DATE(A.END_DATE)",nativeQuery = true)
     Optional<List<DailyAuction>>  getAuctionStarted();
 
-    @Query(value = "SELECT\n" +
-            "      Count(a.ID)\n" +
-            "    FROM\n" +
-            "      Auction a WHERE\n" +
-            "  DATE(A.END_DATE) <= NOW() and a.starting_price < 20000",nativeQuery = true)
-    Optional<Integer> getLeastValuableAuction();
-
-    @Query(value = "SELECT\n" +
-            "      Count(a.ID)\n" +
-            "    FROM\n" +
-            "      Auction a WHERE\n" +
-            "  DATE(A.END_DATE) <= NOW() and a.starting_price >= 200000",nativeQuery = true)
-    Optional<Integer> getMostValuableAuction();
 }

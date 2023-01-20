@@ -6,10 +6,7 @@ import mg.cloud.enchere_back_end.Response.ErrorResponse;
 import mg.cloud.enchere_back_end.Service.App_userService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 
@@ -33,6 +30,16 @@ public class AuthentificationApp_userController {
         } else {
             ErrorResponse response = new ErrorResponse(404,"user not found");
             return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
+        }
+    }
+    @GetMapping("/logout")
+    public ResponseEntity<?> logout(@RequestHeader("token") String token) {
+        if(app_userService.logout(token)) {
+            ErrorResponse response = new ErrorResponse(200, "successfully logout");
+            return new ResponseEntity<>(response,HttpStatus.OK);
+        } else {
+            ErrorResponse response = new ErrorResponse(500, "failed to logout");
+            return new ResponseEntity<>(response,HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

@@ -25,4 +25,8 @@ public class AdminService {
         return data.map(admin_tokenService::generateToken).orElse(null);
     }
 
+    public boolean logout(String token) {
+        return admin_tokenService.removeToken(token);
+    }
+
 }

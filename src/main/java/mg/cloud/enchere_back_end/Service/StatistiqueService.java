@@ -1,6 +1,8 @@
 package mg.cloud.enchere_back_end.Service;
 
+import mg.cloud.enchere_back_end.Model.Auction;
 import mg.cloud.enchere_back_end.Model.DailyAuction;
+import mg.cloud.enchere_back_end.Repository.AuctionRepository;
 import mg.cloud.enchere_back_end.Repository.DailyAuctionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +13,8 @@ import java.util.List;
 public class StatistiqueService {
     @Autowired
     private DailyAuctionRepository dailyAuctionRepository;
+    @Autowired
+    private AuctionRepository auctionRepository;
 
     public List<DailyAuction> getDailySales(){
         return dailyAuctionRepository.getDailySales().orElse(null);
@@ -21,7 +25,7 @@ public class StatistiqueService {
     }
 
     public Integer getCommisionAverage(){
-        return dailyAuctionRepository.getCommisionAverage().orElse(null);
+        return dailyAuctionRepository.getCommisionAverage().orElse(0);
     }
 
     public List<DailyAuction> getAuctionFinished(){
@@ -32,11 +36,10 @@ public class StatistiqueService {
         return dailyAuctionRepository.getAuctionStarted().orElse(null);
     }
 
-    public Integer getLeastValuableAuction(){
-        return dailyAuctionRepository.getLeastValuableAuction().orElse(0);
+    public Auction getLeastValuableAuction(){
+        return auctionRepository.getLeastValuableAuction().orElse(null);
     }
-
-    public Integer getMostValuableAuction(){
-        return dailyAuctionRepository.getMostValuableAuction().orElse(0);
+    public Auction getMostValuableAuction(){
+        return auctionRepository.getMostValuableAuction().orElse(null);
     }
 }

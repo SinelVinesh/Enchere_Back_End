@@ -1,6 +1,7 @@
 package mg.cloud.enchere_back_end.Model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import java.util.Date;
 @ToString
 @RequiredArgsConstructor
 @Table(name = "app_user_recharge_request")
+@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
 public class App_user_recharge_request {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -29,6 +31,5 @@ public class App_user_recharge_request {
 
     @ManyToOne
     @JoinColumn(name="app_userid")
-    @JsonBackReference
     private App_user user;
 }

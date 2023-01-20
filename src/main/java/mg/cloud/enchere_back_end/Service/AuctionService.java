@@ -1,17 +1,12 @@
 package mg.cloud.enchere_back_end.Service;
 
-import mg.cloud.enchere_back_end.Model.App_user;
-import mg.cloud.enchere_back_end.Model.Auction;
-import mg.cloud.enchere_back_end.Model.Bid_history;
-import mg.cloud.enchere_back_end.Model.V_app_user;
-import mg.cloud.enchere_back_end.Repository.App_userRepository;
-import mg.cloud.enchere_back_end.Repository.AuctionRepository;
-import mg.cloud.enchere_back_end.Repository.Bid_historyRepository;
-import mg.cloud.enchere_back_end.Repository.V_app_userRepository;
+import mg.cloud.enchere_back_end.Model.*;
+import mg.cloud.enchere_back_end.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -24,7 +19,10 @@ public class AuctionService {
 
     @Autowired
     private V_app_userRepository v_app_userRepository;
-
+    @Autowired
+    private AuctionStateRepository auctionStateRepository;
+    @Autowired
+    private App_userRepository app_userRepository;
     public Auction saveAuction(Auction auction){
         return auctionRepository.save(auction);
     }
@@ -65,5 +63,24 @@ public class AuctionService {
     public V_app_user getV_app_user(Long id){
        Optional<V_app_user> vap = v_app_userRepository.getV_app_user(id);
         return vap.orElse(null);
+    }
+
+    public List<Bid_history> getAuctionNotClosed(){
+        return bid_historyRepository.getAuctionNotClosed().orElse(null);
+    }
+
+    public void closedAuction(){
+        List<Bid_history> auction = this.getAuctionNotClosed();
+        if(auction!=null){
+            for (Bid_history bid_history : auction) {
+                Auction au = bid_history.getBidId();
+                au.setAuctionState(auctionStateRepository.findById(2L).get());
+                App_user appUser = bid_history.getAppUser();
+                V_app_user vAppUser = v_app_userRepository.getV_app_user(appUser.getId()).get();
+                appUser.setAccount_balance(vAppUser.getMoney_can_use());
+                app_userRepository.save(appUser);
+                auctionRepository.save(au);
+            }
+        }
     }
 }

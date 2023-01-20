@@ -5,10 +5,7 @@ import mg.cloud.enchere_back_end.Response.ErrorResponse;
 import mg.cloud.enchere_back_end.Service.AdminService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 
@@ -32,6 +29,17 @@ public class AuthentificationAdminController {
         } else {
             ErrorResponse response = new ErrorResponse(404,"admin not found");
             return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/logout")
+    public ResponseEntity<?> logout(@RequestHeader("token") String token) {
+        if(adminService.logout(token)) {
+            ErrorResponse response = new ErrorResponse(200, "successfully logout");
+            return new ResponseEntity<>(response,HttpStatus.OK);
+        } else {
+            ErrorResponse response = new ErrorResponse(500, "failed to logout");
+            return new ResponseEntity<>(response,HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

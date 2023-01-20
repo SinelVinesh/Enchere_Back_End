@@ -1,6 +1,7 @@
 package mg.cloud.enchere_back_end.Model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -27,12 +28,10 @@ public class Auction {
 
     @ManyToOne
     @JoinColumn(name = "app_userid")
-    @JsonBackReference
     private App_user appUser;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
-    @JsonBackReference
     private Category category;
 
     @Column(name = "start_date",nullable = false)
@@ -46,4 +45,8 @@ public class Auction {
 
     @Column(name = "bid_step")
     private Float bid_step;
+
+    @ManyToOne
+    @JoinColumn(name = "auction_stateid")
+    private AuctionState auctionState;
 }
