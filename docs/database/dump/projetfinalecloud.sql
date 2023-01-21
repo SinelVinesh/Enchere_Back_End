@@ -8,7 +8,7 @@ CREATE TABLE app_user_recharge_request (id SERIAL NOT NULL, "date" date NOT NULL
 CREATE TABLE recharge_state (id SERIAL NOT NULL, description varchar(50) NOT NULL, PRIMARY KEY (id));
 CREATE TABLE bid_history (id SERIAL NOT NULL, amount float4 NOT NULL, "date" date NOT NULL, app_userid int4 NOT NULL, bidId int4 NOT NULL, PRIMARY KEY (id));
 CREATE TABLE commision (id SERIAL NOT NULL, amount float4 NOT NULL, parametersid int4 NOT NULL, auctionId int4 NOT NULL, PRIMARY KEY (id));
-CREATE TABLE app_user_recharge_state_history (id SERIAL NOT NULL, "date" date, app_user_recharge_requestid int4 NOT NULL, recharge_stateid int4 NOT NULL, PRIMARY KEY (id));
+CREATE TABLE reloadRequestStateHistory (id SERIAL NOT NULL, "date" date, app_user_recharge_requestid int4 NOT NULL, recharge_stateid int4 NOT NULL, PRIMARY KEY (id));
 CREATE TABLE admin_token (id SERIAL NOT NULL, value varchar(255) NOT NULL, expiration_date timestamp NOT NULL, creation_date timestamp NOT NULL, adminid int4 NOT NULL, PRIMARY KEY (id));
 CREATE TABLE app_user_token (id SERIAL NOT NULL, value varchar(255) NOT NULL, expiration_date timestamp NOT NULL, creation_date timestamp NOT NULL, app_userid int4 NOT NULL, PRIMARY KEY (id));
 ALTER TABLE auction ADD CONSTRAINT FKauction314945 FOREIGN KEY (app_userid) REFERENCES app_user (id);
@@ -18,7 +18,7 @@ ALTER TABLE bid_history ADD CONSTRAINT FKbid_histor887760 FOREIGN KEY (app_useri
 ALTER TABLE bid_history ADD CONSTRAINT FKbid_histor407877 FOREIGN KEY (bidId) REFERENCES auction (Id);
 ALTER TABLE commision ADD CONSTRAINT FKcommision295386 FOREIGN KEY (parametersid) REFERENCES parameters (id);
 ALTER TABLE commision ADD CONSTRAINT FKcommision804390 FOREIGN KEY (auctionId) REFERENCES auction (Id);
-ALTER TABLE app_user_recharge_state_history ADD CONSTRAINT FKapp_user_r630701 FOREIGN KEY (app_user_recharge_requestid) REFERENCES app_user_recharge_request (id);
-ALTER TABLE app_user_recharge_state_history ADD CONSTRAINT FKapp_user_r279062 FOREIGN KEY (recharge_stateid) REFERENCES recharge_state (id);
+ALTER TABLE reloadRequestStateHistory ADD CONSTRAINT FKapp_user_r630701 FOREIGN KEY (app_user_recharge_requestid) REFERENCES app_user_recharge_request (id);
+ALTER TABLE reloadRequestStateHistory ADD CONSTRAINT FKapp_user_r279062 FOREIGN KEY (recharge_stateid) REFERENCES recharge_state (id);
 ALTER TABLE admin_token ADD CONSTRAINT FKadmin_toke154889 FOREIGN KEY (adminid) REFERENCES admin (id);
 ALTER TABLE app_user_token ADD CONSTRAINT FKapp_user_t445450 FOREIGN KEY (app_userid) REFERENCES app_user (id);

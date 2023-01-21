@@ -33,30 +33,28 @@ public class CrudService<T,ID> {
                 } else {
                     return getAll();
                 }
+
             case "POST":
                 try {
-                    Constructor<T> constructor = (Constructor<T>) data.getClass().getConstructor(data.getClass());
-                    T tosave = constructor.newInstance(data);
-                    return save(tosave);
-                } catch (InvocationTargetException e) {
-                    if(e.getTargetException() instanceof InvalidFieldValue targetException) {
-                        return new ResponseEntity<>(new Response(targetException.getMessage()), HttpStatus.BAD_REQUEST);
-                    }
-                    e.printStackTrace();
+                    return save(data);
                 } catch (Exception e) {
                     e.printStackTrace();
+                    return new ResponseEntity<>(new Response(e.getMessage()), HttpStatus.BAD_REQUEST);
                 }
             case "PUT":
                 if(id.isPresent()) {
                     return update(id.get(),data);
                 }
+                break;
             case "DELETE":
                 if(id.isPresent()) {
                     return delete(id.get());
                 }
+                break;
             default:
-                return ResponseEntity.notFound().build();
+                return ResponseEntity.badRequest().build();
         }
+        return ResponseEntity.badRequest().build();
     }
     private ResponseEntity<Response> getAll() {
         List<T> data = repository.findAll();
@@ -75,7 +73,7 @@ public class CrudService<T,ID> {
     }
 
     private ResponseEntity<Response> save(T entity) {
-        repository.save(entity);
+        entity = repository.save(entity);
         Response response = new Response(entity);
         return ResponseEntity.ok(response);
     }
@@ -94,7 +92,7 @@ public class CrudService<T,ID> {
                     setter.invoke(data, value);
                 }
             }
-            repository.save(data);
+            data = repository.save(data);
             Response response = new Response(data);
             return ResponseEntity.ok(response);
         } catch (Exception e) {

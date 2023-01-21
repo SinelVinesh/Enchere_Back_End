@@ -12,9 +12,9 @@ import lombok.ToString;
 @Setter
 @ToString
 @RequiredArgsConstructor
-@Table(name = "recharge_state")
+@Table(name = "reload_state")
 @JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
-public class Recharge_state {
+public class ReloadState {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)

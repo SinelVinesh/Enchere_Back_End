@@ -1,7 +1,6 @@
 package mg.cloud.enchere_back_end.Repository;
 
 import mg.cloud.enchere_back_end.Model.AuctionState;
-import mg.cloud.enchere_back_end.Model.Recharge_state;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

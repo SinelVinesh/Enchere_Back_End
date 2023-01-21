@@ -43,7 +43,7 @@ SELECT
 
 
    
- select * from app_user_recharge_state_history where app_user_recharge_requestid not in(select app_user_recharge_requestid from app_user_recharge_state_history where recharge_stateid != 1);
+ select * from reloadRequestStateHistory where app_user_recharge_requestid not in(select app_user_recharge_requestid from reloadRequestStateHistory where recharge_stateid != 1);
 
  SELECT
       a.ID

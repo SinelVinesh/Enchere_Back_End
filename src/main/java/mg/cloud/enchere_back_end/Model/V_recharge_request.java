@@ -12,6 +12,6 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class V_recharge_request {
     private Date date;
-    private App_user_recharge_request appUserRechargeRequest;
-    private Recharge_state rechargeState;
+    private ReloadRequest appUserRechargeRequest;
+    private ReloadState rechargeState;
 }
