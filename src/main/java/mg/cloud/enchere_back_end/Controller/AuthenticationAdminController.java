@@ -11,25 +11,17 @@ import java.util.HashMap;
 
 @RestController
 @RequestMapping("/admin")
-public class AuthentificationAdminController {
+public class AuthenticationAdminController {
 
     private final AdminService adminService;
 
-    public AuthentificationAdminController(AdminService adminService) {
+    public AuthenticationAdminController(AdminService adminService) {
         this.adminService = adminService;
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Admin admin){
-        String token= adminService.login(admin);
-        HashMap<String,String> responseData = new HashMap<>();
-        responseData.put("token",token);
-        if(token != null){
-            return new ResponseEntity<>(responseData, HttpStatus.OK);
-        } else {
-            Response response = new Response("admin not found");
-            return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<Response> login(@RequestBody Admin admin){
+        return adminService.login(admin);
     }
 
     @GetMapping("/logout")

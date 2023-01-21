@@ -28,13 +28,12 @@ public class Bid_history {
     private Timestamp date;
 
     @ManyToOne
-    @JoinColumn(name = "app_userid")
+    @JoinColumn(name = "app_user_id")
     @JsonBackReference
     private App_user appUser;
 
     @ManyToOne
-    @JoinColumn(name = "bidid")
+    @JoinColumn(name = "auction_id")
     @JsonBackReference
-    private Auction bidId;
-
+    private Auction auction;
 }

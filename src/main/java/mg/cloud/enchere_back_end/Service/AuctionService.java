@@ -23,6 +23,9 @@ public class AuctionService {
     private AuctionStateRepository auctionStateRepository;
     @Autowired
     private App_userRepository app_userRepository;
+    @Autowired
+    private AuctionWithStateRepository auctionWithStateRepository;
+
     public Auction saveAuction(Auction auction){
         return auctionRepository.save(auction);
     }
@@ -31,22 +34,22 @@ public class AuctionService {
         return bid_historyRepository.save(bid_history);
     }
     public boolean haveAmount(Bid_history bid_history,V_app_user v_app_user) throws Exception {
-        if((v_app_user.getMoney_can_use() < bid_history.getAmount()) || (bid_history.getAmount() < bid_history.getBidId().getStarting_price()) ) throw new Exception("your account balance is not valid");
+        if((v_app_user.getMoney_can_use() < bid_history.getAmount()) || (bid_history.getAmount() < bid_history.getAuction().getStarting_price()) ) throw new Exception("your account balance is not valid");
        return true;
     }
 
     public boolean haveBid_step(Bid_history bid_history) {
-        return ObjectUtils.isEmpty(bid_history.getBidId().getBid_step());
+        return ObjectUtils.isEmpty(bid_history.getAuction().getBid_step());
 
     }
 
     public boolean verifyAmountInBid_step(Bid_history bid_history) throws Exception {
-        if(bid_history.getAmount() % bid_history.getBidId().getBid_step()!=0) throw new Exception("Your amount does not follow the bid-step");
+        if(bid_history.getAmount() % bid_history.getAuction().getBid_step()!=0) throw new Exception("Your amount does not follow the bid-step");
         return true;
     }
 
     public boolean verifyAuction(Bid_history bid_history) throws Exception {
-        if(bid_history.getBidId().getEnd_date().compareTo(bid_history.getDate()) < 0) throw new Exception("The Auction is no longer available");
+        if(bid_history.getAuction().getEnd_date().compareTo(bid_history.getDate()) < 0) throw new Exception("The Auction is no longer available");
         return true;
     }
 
@@ -73,7 +76,7 @@ public class AuctionService {
         List<Bid_history> auction = this.getAuctionNotClosed();
         if(auction!=null){
             for (Bid_history bid_history : auction) {
-                Auction au = bid_history.getBidId();
+                Auction au = bid_history.getAuction();
                 au.setAuctionState(auctionStateRepository.findById(2L).get());
                 App_user appUser = bid_history.getAppUser();
                 V_app_user vAppUser = v_app_userRepository.getV_app_user(appUser.getId()).get();
@@ -82,5 +85,17 @@ public class AuctionService {
                 auctionRepository.save(au);
             }
         }
+    }
+
+    public Bid_history getTopBid(Long auctionId){
+        return bid_historyRepository.findFirstByAuctionIdOrderByDateDesc(auctionId).orElse(null);
+    }
+
+    public List<AuctionWithState> findAllWithState() {
+        List<AuctionWithState> auctions = auctionWithStateRepository.findAll();
+        for(AuctionWithState auction : auctions) {
+            auction.setTopBid(this.getTopBid(auction.getId()));
+        }
+        return auctions;
     }
 }

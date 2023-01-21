@@ -18,7 +18,6 @@ import java.sql.Timestamp;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/auction")
 public class AuctionController {
     private final AuctionService auctionService;
     private final App_userService app_userService;
@@ -36,7 +35,7 @@ public class AuctionController {
         this.auctionRepository = auctionRepository;
     }
 
-    @PostMapping("/bid/{app_userid}&{bidid}&{amount}&{date}")
+    @PostMapping("auctions/bid/{app_userid}&{bidid}&{amount}&{date}")
     public ResponseEntity<?> bid(@PathVariable("app_userid") Long app_userid,@PathVariable("bidid") Long bidid,@PathVariable("amount") float amount,@PathVariable("date") Timestamp date){
         auctionService.closedAuction();
         App_user user = app_userService.findById(app_userid);
@@ -61,7 +60,7 @@ public class AuctionController {
 
         Bid_history bid_history = new Bid_history();
         bid_history.setAppUser(user);
-        bid_history.setBidId(auctionService.findById(bidid));
+        bid_history.setAuction(auctionService.findById(bidid));
         bid_history.setAmount(amount);
         bid_history.setDate(date);
         try{
@@ -86,6 +85,13 @@ public class AuctionController {
         }
         return new ResponseEntity<>(bid_history, HttpStatus.OK);
     }
+
+    @GetMapping(value={"/auctions"})
+    public ResponseEntity<Response> getAllAuction(){
+        Response response = new Response(auctionService.findAllWithState());
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 
     @RequestMapping(value={"/auctions","/auctions/{id}"})
     public ResponseEntity<Response> crudAuction(

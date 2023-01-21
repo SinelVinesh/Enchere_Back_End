@@ -13,4 +13,6 @@ public interface Bid_historyRepository extends JpaRepository<Bid_history,Long> {
 
     @Query(value = "select b.* from auction a join bid_history b on b.bidid = a.id where a.END_DATE <= NOW() and a.auction_stateid = 1 and b.id in (SELECT MAX(B.ID) FROM BID_HISTORY B GROUP BY B.BIDID)",nativeQuery = true)
     Optional<List<Bid_history>> getAuctionNotClosed();
+
+    Optional<Bid_history> findFirstByAuctionIdOrderByDateDesc(Long auctionId);
 }
