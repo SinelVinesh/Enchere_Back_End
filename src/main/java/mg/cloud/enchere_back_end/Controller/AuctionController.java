@@ -1,11 +1,9 @@
 package mg.cloud.enchere_back_end.Controller;
 
 import jakarta.servlet.http.HttpServletRequest;
-import mg.cloud.enchere_back_end.Model.App_user;
-import mg.cloud.enchere_back_end.Model.Auction;
-import mg.cloud.enchere_back_end.Model.Bid_history;
-import mg.cloud.enchere_back_end.Model.V_app_user;
+import mg.cloud.enchere_back_end.Model.*;
 import mg.cloud.enchere_back_end.Repository.AuctionRepository;
+import mg.cloud.enchere_back_end.Repository.AuctionWithStateRepository;
 import mg.cloud.enchere_back_end.Service.App_userService;
 import mg.cloud.enchere_back_end.Service.AuctionService;
 import mg.cloud.enchere_back_end.Service.CrudService;
@@ -21,18 +19,24 @@ import java.util.Optional;
 public class AuctionController {
     private final AuctionService auctionService;
     private final App_userService app_userService;
-    private final CrudService<Auction,Long> crudService;
+    private final CrudService<Auction,Long> crudServiceAuction;
+    private final CrudService<AuctionWithState, Long> crudServiceAuctionWithState;
     private final AuctionRepository auctionRepository;
+    private final AuctionWithStateRepository auctionWithStateRepository;
     public AuctionController(
             AuctionService auctionService,
             App_userService app_userService,
-            CrudService<Auction, Long> crudService,
-            AuctionRepository auctionRepository
+            CrudService<Auction, Long> crudServiceAuction,
+            CrudService<AuctionWithState, Long> crudServiceAuctionWithState,
+            AuctionRepository auctionRepository,
+            AuctionWithStateRepository auctionWithStateRepository
     ) {
         this.auctionService = auctionService;
         this.app_userService = app_userService;
-        this.crudService = crudService;
+        this.crudServiceAuction = crudServiceAuction;
         this.auctionRepository = auctionRepository;
+        this.auctionWithStateRepository = auctionWithStateRepository;
+        this.crudServiceAuctionWithState = crudServiceAuctionWithState;
     }
 
     @PostMapping("auctions/bid/{app_userid}&{bidid}&{amount}&{date}")
@@ -86,19 +90,20 @@ public class AuctionController {
         return new ResponseEntity<>(bid_history, HttpStatus.OK);
     }
 
-    @GetMapping(value={"/auctions"})
-    public ResponseEntity<Response> getAllAuction(){
-        Response response = new Response(auctionService.findAllWithState());
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    @GetMapping(value={"/auctions","/auctions/{id}"})
+    public ResponseEntity<Response> getAuctions(@PathVariable("id") Optional<Long> id, HttpServletRequest request){
+        ResponseEntity<Response> response = crudServiceAuctionWithState.handle(request.getMethod(), auctionWithStateRepository, id, null);
+        if(response.getBody() != null){
+            auctionService.fillAcutions(response.getBody().getData());
+        }
+        return response;
     }
-
-
     @RequestMapping(value={"/auctions","/auctions/{id}"})
     public ResponseEntity<Response> crudAuction(
             @PathVariable("id") Optional<Long> id,
             @RequestBody Optional<Auction> auction,
             HttpServletRequest request) {
         Auction data = auction.orElse(null);
-        return crudService.handle(request.getMethod(), auctionRepository, id, data);
+        return crudServiceAuction.handle(request.getMethod(), auctionRepository, id, data);
     }
 }

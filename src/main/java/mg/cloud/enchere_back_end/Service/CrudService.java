@@ -1,17 +1,21 @@
 package mg.cloud.enchere_back_end.Service;
 
 
+import jakarta.persistence.Id;
 import mg.cloud.enchere_back_end.exceptions.InvalidFieldValue;
 import mg.cloud.enchere_back_end.response.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.core.aggregation.Fields;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,14 +48,7 @@ public class CrudService<T,ID> {
                 }
             case "PUT":
                 if(id.isPresent()) {
-                    ID idData = id.get();
-                    try {
-                        Method setter = data.getClass().getMethod("setId",idData.getClass());
-                        setter.invoke(data,idData);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    return save(data);
+                    return update(id.get(),data);
                 }
             case "DELETE":
                 if(id.isPresent()) {
@@ -81,6 +78,29 @@ public class CrudService<T,ID> {
         repository.save(entity);
         Response response = new Response(entity);
         return ResponseEntity.ok(response);
+    }
+
+    private ResponseEntity<Response> update(ID id,T entity) {
+        Field[] fields = entity.getClass().getDeclaredFields();
+        T data = repository.findById(id).orElse(null);
+        try {
+            for (Field field : fields) {
+                String setterName = "set" + field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1);
+                Method setter = entity.getClass().getMethod(setterName, field.getType());
+                String getterName = "get" + field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1);
+                Method getter = entity.getClass().getMethod(getterName);
+                Object value = getter.invoke(entity);
+                if (value != null) {
+                    setter.invoke(data, value);
+                }
+            }
+            repository.save(data);
+            Response response = new Response(data);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(new Response(e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
     }
 
     private ResponseEntity<Response> delete(ID id) {

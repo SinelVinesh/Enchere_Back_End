@@ -19,7 +19,9 @@ public class EnchereBackEndApplication {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(@NonNull CorsRegistry registry) {
-                registry.addMapping("/**").allowedOriginPatterns("http://localhost:[*]");
+                registry.addMapping("/**")
+                        .allowedOriginPatterns("http://localhost:[*]")
+                        .allowedMethods("*");
             }
         };
     }

@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
 @Table(name="v_auction_with_state")
@@ -45,4 +46,7 @@ public class AuctionWithState {
 
     @Transient
     private Bid_history topBid;
+
+    @Transient
+    private List<Bid_history> history;
 }

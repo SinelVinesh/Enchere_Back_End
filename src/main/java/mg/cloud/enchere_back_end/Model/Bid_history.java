@@ -29,7 +29,6 @@ public class Bid_history {
 
     @ManyToOne
     @JoinColumn(name = "app_user_id")
-    @JsonBackReference
     private App_user appUser;
 
     @ManyToOne

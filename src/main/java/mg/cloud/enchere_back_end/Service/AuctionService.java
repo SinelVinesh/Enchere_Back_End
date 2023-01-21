@@ -91,11 +91,22 @@ public class AuctionService {
         return bid_historyRepository.findFirstByAuctionIdOrderByDateDesc(auctionId).orElse(null);
     }
 
-    public List<AuctionWithState> findAllWithState() {
-        List<AuctionWithState> auctions = auctionWithStateRepository.findAll();
-        for(AuctionWithState auction : auctions) {
-            auction.setTopBid(this.getTopBid(auction.getId()));
+    public List<Bid_history> getBidHistory(Long auctionId) {
+        return bid_historyRepository.findByAuctionIdOrderByDateDesc(auctionId).orElse(null);
+    }
+
+    @SuppressWarnings("unchecked")
+    public void fillAcutions(Object auctions) {
+        if(auctions instanceof List){
+            List<AuctionWithState> auctionWithStates = (List<AuctionWithState>) auctions;
+            for (AuctionWithState auctionWithState : auctionWithStates) {
+                auctionWithState.setTopBid(this.getTopBid(auctionWithState.getId()));
+                auctionWithState.setHistory(this.getBidHistory(auctionWithState.getId()));
+            }
+        }else{
+            AuctionWithState auctionWithState = (AuctionWithState) auctions;
+            auctionWithState.setTopBid(this.getTopBid(auctionWithState.getId()));
+            auctionWithState.setHistory(this.getBidHistory(auctionWithState.getId()));
         }
-        return auctions;
     }
 }

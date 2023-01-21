@@ -16,7 +16,7 @@ import lombok.ToString;
 @JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
 public class Category {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 

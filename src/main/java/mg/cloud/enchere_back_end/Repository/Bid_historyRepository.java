@@ -15,4 +15,6 @@ public interface Bid_historyRepository extends JpaRepository<Bid_history,Long> {
     Optional<List<Bid_history>> getAuctionNotClosed();
 
     Optional<Bid_history> findFirstByAuctionIdOrderByDateDesc(Long auctionId);
+
+    Optional<List<Bid_history>> findByAuctionIdOrderByDateDesc(Long auctionId);
 }
