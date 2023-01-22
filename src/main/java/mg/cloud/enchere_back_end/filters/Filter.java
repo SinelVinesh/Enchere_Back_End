@@ -32,7 +32,14 @@ public class Filter  extends OncePerRequestFilter {
                 }
             }
         }
-        String token = request.getHeader("Authorization").split(" ")[1];
+        if(request.getMethod().equals("OPTIONS")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+        String token = request.getHeader("Authorization");
+        if(token != null) {
+            token = token.split(" ")[1];
+        }
         if(tokenService.authenticate(token)) {
             filterChain.doFilter(request, response);
         } else {
