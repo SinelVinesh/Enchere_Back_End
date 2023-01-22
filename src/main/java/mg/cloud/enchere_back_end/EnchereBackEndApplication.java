@@ -21,6 +21,7 @@ public class EnchereBackEndApplication {
             public void addCorsMappings(@NonNull CorsRegistry registry) {
                 registry.addMapping("/**")
                         .allowedOriginPatterns("http://localhost:[*]")
+                        .allowedOriginPatterns("https://auctions-app.netlify.app")
                         .allowedMethods("*");
             }
         };
