@@ -21,6 +21,8 @@ public class AppConfig {
         filterRegistrationBean.addUrlPatterns("/statistics/*");
         filterRegistrationBean.addUrlPatterns("/users");
         filterRegistrationBean.addUrlPatterns("/users/*");
+        filterRegistrationBean.addUrlPatterns("/auctions");
+        filterRegistrationBean.addUrlPatterns("/auctions/*");
         return filterRegistrationBean;
     }
 }

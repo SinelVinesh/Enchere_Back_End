@@ -22,6 +22,7 @@ public class Filter  extends OncePerRequestFilter {
         String[] urls = new String[]{
                 "/categories","/categories/.*",
                 "/users","/users/.*",
+                "/auctions","/auctions/.*",
         };
         if(request.getMethod().equals("GET")){
             for(String url : urls){
