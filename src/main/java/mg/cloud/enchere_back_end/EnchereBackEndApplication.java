@@ -63,6 +63,8 @@ public class EnchereBackEndApplication {
         config.setAllowCredentials(true);
         config.addAllowedOrigin("http://localhost:3000");
         config.addAllowedOrigin("localhost:3000");
+        config.addAllowedOrigin("https://auctions-app.netlify.app");
+        config.addAllowedOrigin("auctions-app.netlify.app");
         config.setAllowedMethods(Arrays.asList("POST", "OPTIONS", "GET", "DELETE", "PUT"));
         config.setAllowedHeaders(Arrays.asList("X-Requested-With", "Origin", "Content-Type", "Accept", "Authorization"));
         source.registerCorsConfiguration("/**", config);
