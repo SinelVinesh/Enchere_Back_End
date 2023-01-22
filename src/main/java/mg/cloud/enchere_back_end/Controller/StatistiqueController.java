@@ -1,7 +1,6 @@
 package mg.cloud.enchere_back_end.Controller;
 
-import mg.cloud.enchere_back_end.Model.Auction;
-import mg.cloud.enchere_back_end.Model.DailyAuction;
+import mg.cloud.enchere_back_end.Model.*;
 import mg.cloud.enchere_back_end.response.Response;
 import mg.cloud.enchere_back_end.Service.AuctionService;
 import mg.cloud.enchere_back_end.Service.StatistiqueService;
@@ -26,41 +25,28 @@ public class StatistiqueController {
         this.auctionService = auctionService;
     }
 
-    @GetMapping("/dailysales")
+    @GetMapping("/turnover")
     public ResponseEntity<?> getDailySales(){
-        auctionService.closedAuction();
-        List<DailyAuction> dailyAuctionList = statistiqueService.getDailySales();
+        List<DailyTurnover> dailyTurnovers = statistiqueService.getDailyTurnover();
+        Float totalTurnover = dailyTurnovers.stream().map(DailyTurnover::getTurnover).reduce(0f, Float::sum);
         HashMap<String,Object> responseData = new HashMap<>();
-        responseData.put("dailySales", dailyAuctionList);
-        responseData.put("totalSales",statistiqueService.getTotalSales());
+        responseData.put("dailySales", dailyTurnovers);
+        responseData.put("totalSales",totalTurnover);
         responseData.put("commisionAverage",statistiqueService.getCommisionAverage());
-        if(dailyAuctionList !=null){
-            return new ResponseEntity<>(responseData, HttpStatus.OK);
-        }else {
-            Response response = new Response("no Sales statistics");
-            return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(new Response(responseData), HttpStatus.OK);
     }
-    @GetMapping("/AuctionStatistics")
-    public ResponseEntity<?> getAuctionStatistics(){
-        auctionService.closedAuction();
-        try {
-            List<DailyAuction> AuctionFinished = statistiqueService.getAuctionFinished();
-            List<DailyAuction> AuctionStarted = statistiqueService.getAuctionStarted();
-            Auction leastValuableAuction = statistiqueService.getLeastValuableAuction();
-            Auction mostValuableAuction = statistiqueService.getMostValuableAuction();
-            HashMap<String, Object> responseData = new HashMap<>();
-            responseData.put("dailyAuctionFinished", AuctionFinished);
-            responseData.put("dailyAuctionStarted", AuctionStarted);
-            responseData.put("totalAuctionFinished", statistiqueService.getTotalSales());
-            responseData.put("leastValuableAuction", leastValuableAuction);
-            responseData.put("mostValuableAuction", mostValuableAuction);
 
-            return new ResponseEntity<>(responseData, HttpStatus.OK);
-        }
-        catch (Exception e){
-            Response response = new Response("no Auction statistics");
-            return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
-        }
+    @GetMapping("/auctions")
+    public ResponseEntity<?> getAuctionStatistics(){
+        List<AuctionStat> auctionStats = statistiqueService.getAuctionStats();
+        AuctionWithTopBid leastValuableAuction = statistiqueService.getLeastValuableAuction();
+        AuctionWithTopBid mostValuableAuction = statistiqueService.getMostValuableAuction();
+        HashMap<String, Object> responseData = new HashMap<>();
+        responseData.put("dailyAuctionStat", auctionStats);
+        responseData.put("totalAuctionFinished", statistiqueService.getTotalSales());
+        responseData.put("leastValuableAuction", leastValuableAuction);
+        responseData.put("mostValuableAuction", mostValuableAuction);
+
+        return new ResponseEntity<>(new Response(responseData), HttpStatus.OK);
     }
 }

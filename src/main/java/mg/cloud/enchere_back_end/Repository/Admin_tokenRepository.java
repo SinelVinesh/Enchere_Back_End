@@ -13,5 +13,5 @@ public interface Admin_tokenRepository extends JpaRepository<Admin_token,Long> {
     void deleteAllByAdminId(Long AdminId);
 
     @Transactional
-    void deleteByValue(String token);
+    Long deleteByValue(String token);
 }

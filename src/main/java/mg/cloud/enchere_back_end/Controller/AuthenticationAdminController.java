@@ -25,7 +25,7 @@ public class AuthenticationAdminController {
     }
 
     @GetMapping("/logout")
-    public ResponseEntity<?> logout(@RequestHeader("token") String token) {
+    public ResponseEntity<?> logout(@RequestHeader("Authorization") String token) {
         if(adminService.logout(token)) {
             Response response = new Response("successfully logout");
             return new ResponseEntity<>(response,HttpStatus.OK);

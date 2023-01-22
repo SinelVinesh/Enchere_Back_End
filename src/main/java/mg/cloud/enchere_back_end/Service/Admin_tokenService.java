@@ -33,7 +33,7 @@ public class Admin_tokenService {
 
     public boolean removeToken(String token) {
         try {
-            admin_tokenRepository.deleteByValue(token);
+            Long deleted = admin_tokenRepository.deleteByValue(token);
             return true;
         } catch (Exception e) {
             e.printStackTrace();

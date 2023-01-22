@@ -40,6 +40,7 @@ public class AdminService {
     }
 
     public boolean logout(String token) {
+        token = token.split(" ")[1];
         return admin_tokenService.removeToken(token);
     }
 
