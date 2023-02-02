@@ -47,7 +47,12 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"name\":\"Technologie\"\r\n}"
+									"raw": "{\r\n    \"name\":\"Technologie\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
 								},
 								"url": {
 									"raw": "{{base}}/categories",
@@ -154,7 +159,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"key\":\"token-duration\",\r\n    \"value\":\"3600\"\r\n}",
+									"raw": "{\r\n    \"key\":\"test\",\r\n    \"currentValue\":{\r\n        \"value\":\"super\"\r\n    }\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -162,19 +167,12 @@
 									}
 								},
 								"url": {
-									"raw": "{{base}}/settings/:id",
+									"raw": "{{base}}/settings",
 									"host": [
 										"{{base}}"
 									],
 									"path": [
-										"settings",
-										":id"
-									],
-									"variable": [
-										{
-											"key": "id",
-											"value": ""
-										}
+										"settings"
 									]
 								}
 							},
@@ -187,7 +185,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"key\":\"token-duration\",\r\n    \"value\":\"4200\"\r\n}",
+									"raw": "{\r\n    \"id\":1,\r\n    \"key\":\"Durrée d'un token\",\r\n    \"currentValue\": {\r\n        \"value\":4200\r\n    }\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -254,7 +252,7 @@
 									"variable": [
 										{
 											"key": "id",
-											"value": ""
+											"value": "1"
 										}
 									]
 								}
@@ -314,7 +312,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"id\":1,\r\n    \"state\": {\r\n        \"id\":1\r\n    }\r\n}",
+									"raw": "{\r\n    \"id\":1,\r\n    \"currentState\": {\r\n        \"id\":1\r\n    }\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -356,119 +354,6 @@
 				{
 					"name": "Utllisateur",
 					"item": [
-						{
-							"name": "Rechargement de compte",
-							"item": [
-								{
-									"name": "Enregistrement d'une demande rechargement de compte",
-									"request": {
-										"method": "POST",
-										"header": [],
-										"body": {
-											"mode": "raw",
-											"raw": "{\r\n    \"user\":{\r\n        \"id\":1\r\n    },\r\n    \"amount\": 15000\r\n}",
-											"options": {
-												"raw": {
-													"language": "json"
-												}
-											}
-										},
-										"url": {
-											"raw": "{{base}}/reloads/request",
-											"host": [
-												"{{base}}"
-											],
-											"path": [
-												"reloads",
-												"request"
-											]
-										}
-									},
-									"response": []
-								}
-							]
-						},
-						{
-							"name": "Recherche",
-							"item": [
-								{
-									"name": "Recherche Simple",
-									"request": {
-										"method": "GET",
-										"header": [],
-										"url": {
-											"raw": "{{base}}/auctions/search?q",
-											"host": [
-												"{{base}}"
-											],
-											"path": [
-												"auctions",
-												"search"
-											],
-											"query": [
-												{
-													"key": "q",
-													"value": null
-												}
-											]
-										}
-									},
-									"response": []
-								},
-								{
-									"name": "Recherche Avancée",
-									"request": {
-										"method": "GET",
-										"header": [],
-										"url": {
-											"raw": "{{base}}/auctions/search?q&start-date&end-date&min-price&max-price&cats&users&status",
-											"host": [
-												"{{base}}"
-											],
-											"path": [
-												"auctions",
-												"search"
-											],
-											"query": [
-												{
-													"key": "q",
-													"value": null
-												},
-												{
-													"key": "start-date",
-													"value": null
-												},
-												{
-													"key": "end-date",
-													"value": null
-												},
-												{
-													"key": "min-price",
-													"value": null
-												},
-												{
-													"key": "max-price",
-													"value": null
-												},
-												{
-													"key": "cats",
-													"value": null
-												},
-												{
-													"key": "users",
-													"value": null
-												},
-												{
-													"key": "status",
-													"value": null
-												}
-											]
-										}
-									},
-									"response": []
-								}
-							]
-						},
 						{
 							"name": "Liste des utilisateurs",
 							"request": {
@@ -516,12 +401,12 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{base}}/adminis",
+									"raw": "{{base}}/admins",
 									"host": [
 										"{{base}}"
 									],
 									"path": [
-										"adminis"
+										"admins"
 									]
 								}
 							},
@@ -583,14 +468,6 @@
 								}
 							},
 							"response": []
-						},
-						{
-							"name": "New Request",
-							"request": {
-								"method": "GET",
-								"header": []
-							},
-							"response": []
 						}
 					]
 				},
@@ -609,12 +486,9 @@
 							}
 						},
 						"url": {
-							"raw": "auctions-app.up.railway.app/admin/login",
+							"raw": "{{base}}/admin/login",
 							"host": [
-								"auctions-app",
-								"up",
-								"railway",
-								"app"
+								"{{base}}"
 							],
 							"path": [
 								"admin",
@@ -672,9 +546,9 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{base}}}}/auctions",
+							"raw": "{{base}}/auctions",
 							"host": [
-								"{{base}}}}"
+								"{{base}}"
 							],
 							"path": [
 								"auctions"
@@ -700,7 +574,7 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": ""
+									"value": "1"
 								}
 							]
 						}
@@ -822,6 +696,119 @@
 					]
 				},
 				{
+					"name": "Rechargement de compte",
+					"item": [
+						{
+							"name": "Enregistrement d'une demande rechargement de compte",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"user\":{\r\n        \"id\":2\r\n    },\r\n    \"amount\": 200000\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base}}/reloads/request",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"reloads",
+										"request"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Recherche",
+					"item": [
+						{
+							"name": "Recherche Simple",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base}}/auctions/search?q",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"auctions",
+										"search"
+									],
+									"query": [
+										{
+											"key": "q",
+											"value": null
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Recherche Avancée",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base}}/auctions/search?q&start-date&end-date&min-price&max-price&cats&users&status",
+									"host": [
+										"{{base}}"
+									],
+									"path": [
+										"auctions",
+										"search"
+									],
+									"query": [
+										{
+											"key": "q",
+											"value": null
+										},
+										{
+											"key": "start-date",
+											"value": null
+										},
+										{
+											"key": "end-date",
+											"value": null
+										},
+										{
+											"key": "min-price",
+											"value": null
+										},
+										{
+											"key": "max-price",
+											"value": null
+										},
+										{
+											"key": "cats",
+											"value": null
+										},
+										{
+											"key": "users",
+											"value": null
+										},
+										{
+											"key": "status",
+											"value": null
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
 					"name": "Connexion",
 					"request": {
 						"method": "POST",
@@ -922,6 +909,16 @@
 			]
 		}
 	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
 	"event": [
 		{
 			"listen": "prerequest",
@@ -945,7 +942,7 @@
 	"variable": [
 		{
 			"key": "base",
-			"value": "http://localhost:8080",
+			"value": "https://auctions-app.up.railway.app",
 			"type": "default"
 		},
 		{
