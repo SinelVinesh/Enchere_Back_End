@@ -133,6 +133,7 @@ public class AuctionService {
                 auctionWithState.setHistory(this.getBidHistory(auctionWithState.getId()));
                 auctionWithState.setImages(this.getPhotos(auctionWithState.getId()));
             }
+            auctionWithStates.sort((a1, a2) -> a2.getStartDate().compareTo(a1.getStartDate()));
         }else{
             AuctionWithState auctionWithState = (AuctionWithState) auctions;
             auctionWithState.setTopBid(this.getTopBid(auctionWithState.getId()));

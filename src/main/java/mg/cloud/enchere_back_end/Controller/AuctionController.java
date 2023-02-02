@@ -100,9 +100,7 @@ public class AuctionController {
     public ResponseEntity<Response> getAuctions(@PathVariable("id") Optional<Long> id, HttpServletRequest request){
         ResponseEntity<Response> response = crudServiceAuctionWithState.handle(request.getMethod(), auctionWithStateRepository, id, null);
         if(response.getBody() != null){
-            List<AuctionWithState> auctions = (List<AuctionWithState>) response.getBody().getData();
-            auctionService.fillAcutions(auctions);
-            auctions.sort(Comparator.comparing(AuctionWithState::getStartDate));
+            auctionService.fillAcutions(response.getBody().getData());
         }
         return response;
     }
