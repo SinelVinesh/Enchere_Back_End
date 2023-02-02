@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Entity
@@ -26,7 +25,7 @@ public class Admin_token {
     private String value;
 
     @Column(name = "expiration_date",nullable = false, columnDefinition = "TIMESTAMP")
-    private LocalDateTime expiration_date;
+    private LocalDateTime expirationDate;
 
     @Column(name = "creation_date",nullable = false, columnDefinition = "TIMESTAMP")
     private LocalDateTime creation_date;

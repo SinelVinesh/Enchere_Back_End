@@ -7,9 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
 @Getter
@@ -32,7 +30,7 @@ public class ReloadRequest {
 
     @ManyToOne
     @JoinColumn(name= "app_user_id")
-    private App_user user;
+    private AppUser user;
 
     @Transient
     private ReloadRequestStateHistory currentState;

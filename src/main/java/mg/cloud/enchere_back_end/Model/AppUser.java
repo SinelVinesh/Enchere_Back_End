@@ -1,44 +1,49 @@
 package mg.cloud.enchere_back_end.Model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import javax.validation.constraints.*;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-import javax.validation.constraints.Pattern;
 
-@Entity
+import lombok.*;
+import mg.cloud.enchere_back_end.exceptions.InvalidValueException;
+
+import javax.validation.constraints.Pattern;
+import java.time.LocalDate;
+
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
 @Table(name = "app_user")
 @JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
-public class App_user {
+public class AppUser {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private Long id;
 
-
-    @Size(min=3)
     @Column(name = "username",nullable = false)
     private String username;
 
-    @Size(min=8)
-    @Pattern(regexp = "^(?=.*[A-Z]).+$", message = "Le mot de passe doit contenir au moins une majuscule")
     @Column(name = "password",nullable = false)
+    @JsonBackReference
     private String password;
 
     @Email
     @Column(name = "email",nullable = false)
     private String email;
 
-    @Min(0)
-    @Column(name = "account_balance",nullable = false)
-    private float account_balance;
+    @Column(name = "birth_date",nullable = false, columnDefinition = "DATE")
+    private LocalDate birthDate;
 
+    @Column(name = "registration_date",nullable = false, columnDefinition = "DATE")
+    private LocalDate registrationDate;
+
+    @Column(name = "account_balance",nullable = false)
+    private float accountBalance;
 }
 

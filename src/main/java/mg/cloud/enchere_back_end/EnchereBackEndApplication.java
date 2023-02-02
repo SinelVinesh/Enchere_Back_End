@@ -1,7 +1,8 @@
 package mg.cloud.enchere_back_end;
 
 //import mg.cloud.enchere_back_end.filters.Filter;
-import mg.cloud.enchere_back_end.filters.Filter;
+import mg.cloud.enchere_back_end.filters.AdminFilter;
+import mg.cloud.enchere_back_end.filters.AppUserFilter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -9,14 +10,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.core.Ordered;
 import org.springframework.lang.NonNull;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Arrays;
-import java.util.Collections;
 
 @SpringBootApplication
 public class EnchereBackEndApplication {
@@ -39,9 +38,9 @@ public class EnchereBackEndApplication {
         };
     }
     @Bean
-    public FilterRegistrationBean<Filter> filterRegistrationBean(Filter filter) {
-        FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
-        filterRegistrationBean.setFilter(filter);
+    public FilterRegistrationBean<AdminFilter> filterRegistrationBean(AdminFilter adminFilter) {
+        FilterRegistrationBean<AdminFilter> filterRegistrationBean = new FilterRegistrationBean<>();
+        filterRegistrationBean.setFilter(adminFilter);
         filterRegistrationBean.addUrlPatterns("/admin/logout");
         filterRegistrationBean.addUrlPatterns("/categories");
         filterRegistrationBean.addUrlPatterns("/categories/*");
@@ -50,18 +49,26 @@ public class EnchereBackEndApplication {
         filterRegistrationBean.addUrlPatterns("/reloads");
         filterRegistrationBean.addUrlPatterns("/reloads/validations");
         filterRegistrationBean.addUrlPatterns("/statistics/*");
-        filterRegistrationBean.addUrlPatterns("/users");
-        filterRegistrationBean.addUrlPatterns("/users/*");
-        filterRegistrationBean.addUrlPatterns("/auctions");
-        filterRegistrationBean.addUrlPatterns("/auctions/*");
+        filterRegistrationBean.addUrlPatterns("/auctions/{id}");
         return filterRegistrationBean;
     }
+
+    @Bean
+    public FilterRegistrationBean<AppUserFilter> appUserFilterRegistrationBean(AppUserFilter appUserFilter) {
+        FilterRegistrationBean<AppUserFilter> filterRegistrationBean = new FilterRegistrationBean<>();
+        filterRegistrationBean.setFilter(appUserFilter);
+        filterRegistrationBean.addUrlPatterns("/auctions/bid");
+        filterRegistrationBean.addUrlPatterns("/auctions");
+        return filterRegistrationBean;
+    }
+
     @Bean
     public FilterRegistrationBean corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
         config.addAllowedOrigin("http://localhost:3000");
+        config.addAllowedOrigin("http://localhost:8100");
         config.addAllowedOrigin("localhost:3000");
         config.addAllowedOrigin("https://auctions-app.netlify.app");
         config.addAllowedOrigin("auctions-app.netlify.app");

@@ -17,7 +17,7 @@ public class AuctionWithTopBid {
     private String description;
     @OneToOne
     @JoinColumn(name = "app_user_id")
-    private App_user appUser;
+    private AppUser appUser;
     @Column(name = "start_date", columnDefinition = "TIMESTAMPTZ")
     private LocalDateTime startDate;
     @Column(name = "end_date", columnDefinition = "TIMESTAMPTZ")
@@ -27,7 +27,7 @@ public class AuctionWithTopBid {
     private String title;
     @OneToOne
     @JoinColumn(name = "top_bid_id")
-    private Bid_history topBid;
+    private BidHistory topBid;
     @OneToOne
     @JoinColumn(name = "state_id")
     private AuctionState state;

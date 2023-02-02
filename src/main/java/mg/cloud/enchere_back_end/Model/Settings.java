@@ -23,4 +23,8 @@ public class Settings {
 
     @Transient
     private List<SettingsValueHistory> history;
+
+    public SettingsValueHistory getCurrentValue() {
+        return currentValue;
+    }
 }

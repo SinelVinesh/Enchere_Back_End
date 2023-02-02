@@ -2,27 +2,26 @@ package mg.cloud.enchere_back_end.filters;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.*;
-import mg.cloud.enchere_back_end.Service.Admin_tokenService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import mg.cloud.enchere_back_end.Service.AppUserTokenService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 
 import java.io.IOException;
 
 @Component
-public class Filter  extends OncePerRequestFilter {
-    private final Admin_tokenService tokenService;
+public class AppUserFilter extends OncePerRequestFilter {
+    private final AppUserTokenService appUserTokenService;
 
-    public Filter(Admin_tokenService tokenService) {
-        this.tokenService = tokenService;
+    public AppUserFilter(AppUserTokenService appUserTokenService) {
+        this.appUserTokenService = appUserTokenService;
     }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String[] urls = new String[]{
-                "/categories","/categories/.*",
-                "/users","/users/.*",
-                "/auctions","/auctions/.*",
+                "/auctions"
         };
         if(request.getMethod().equals("GET")){
             for(String url : urls){
@@ -40,10 +39,15 @@ public class Filter  extends OncePerRequestFilter {
         if(token != null) {
             token = token.split(" ")[1];
         }
-        if(tokenService.authenticate(token)) {
-            filterChain.doFilter(request, response);
-        } else {
+        try {
+            if (appUserTokenService.authenticate(token)) {
+                filterChain.doFilter(request, response);
+            } else {
+                response.setStatus(401);
+            }
+        } catch (Exception e) {
             response.setStatus(401);
+            throw new ServletException(e.getMessage());
         }
     }
 }

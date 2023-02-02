@@ -8,6 +8,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -15,7 +16,7 @@ import java.sql.Timestamp;
 @ToString
 @RequiredArgsConstructor
 @Table(name = "bid_history")
-public class Bid_history {
+public class BidHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
@@ -24,12 +25,12 @@ public class Bid_history {
     @Column(name = "amount",nullable = false)
     private float amount;
 
-    @Column(name = "date",nullable = false)
-    private Timestamp date;
+    @Column(name = "date",nullable = false, columnDefinition = "TIMESTAMPTZ")
+    private LocalDateTime date;
 
     @ManyToOne
     @JoinColumn(name = "app_user_id")
-    private App_user appUser;
+    private AppUser appUser;
 
     @ManyToOne
     @JoinColumn(name = "auction_id")

@@ -1,21 +1,14 @@
 package mg.cloud.enchere_back_end.Service;
 
 
-import jakarta.persistence.Id;
-import mg.cloud.enchere_back_end.exceptions.InvalidFieldValue;
 import mg.cloud.enchere_back_end.response.Response;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.mongodb.core.aggregation.Fields;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 

@@ -1,13 +1,14 @@
 package mg.cloud.enchere_back_end.Model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -15,7 +16,7 @@ import java.sql.Timestamp;
 @ToString
 @RequiredArgsConstructor
 @Table(name = "app_user_token")
-public class App_user_token {
+public class AppUserToken {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
@@ -24,14 +25,16 @@ public class App_user_token {
     @Column(name = "value",nullable = false)
     private String value;
 
-    @Column(name = "expiration_date",nullable = false)
-    private Timestamp expiration_date;
+    @JsonIgnore
+    @Column(name = "expiration_date",nullable = false, columnDefinition = "TIMESTAMP")
+    private LocalDateTime expirationDate;
 
-    @Column(name = "creation_date",nullable = false)
-    private Timestamp creation_date;
+    @JsonIgnore
+    @Column(name = "creation_date",nullable = false, columnDefinition = "TIMESTAMP")
+    private LocalDateTime creationDate;
 
     @ManyToOne
     @JoinColumn(name="app_userid")
-    @JsonBackReference
-    private App_user user;
+    private AppUser user;
+
 }

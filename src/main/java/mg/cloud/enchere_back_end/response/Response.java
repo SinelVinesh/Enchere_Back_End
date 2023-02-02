@@ -9,11 +9,11 @@ import org.springframework.http.HttpStatus;
 @Setter
 @AllArgsConstructor
 public class Response {
-    private String message;
+    private String error;
     private Object data;
 
     public Response(String message) {
-        this.message = message;
+        this.error = message;
     }
 
     public Response(Object data) {

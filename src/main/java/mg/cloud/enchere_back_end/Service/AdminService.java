@@ -2,7 +2,6 @@ package mg.cloud.enchere_back_end.Service;
 
 import mg.cloud.enchere_back_end.Model.Admin;
 import mg.cloud.enchere_back_end.Repository.AdminRepository;
-import mg.cloud.enchere_back_end.Repository.Admin_tokenRepository;
 import mg.cloud.enchere_back_end.response.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +15,10 @@ public class AdminService {
     @Autowired
     private AdminRepository adminRepository;
 
-    private final Admin_tokenService admin_tokenService;
+    private final AdminTokenService admin_tokenService;
 
 
-    public AdminService(Admin_tokenService admin_tokenService) {
+    public AdminService(AdminTokenService admin_tokenService) {
         this.admin_tokenService = admin_tokenService;
     }
 

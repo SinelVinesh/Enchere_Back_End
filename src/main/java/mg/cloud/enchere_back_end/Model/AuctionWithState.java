@@ -22,7 +22,7 @@ public class AuctionWithState {
 
     @ManyToOne
     @JoinColumn(name = "app_user_id")
-    private App_user appUser;
+    private AppUser appUser;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
@@ -45,8 +45,11 @@ public class AuctionWithState {
     private AuctionState auctionState;
 
     @Transient
-    private Bid_history topBid;
+    private BidHistory topBid;
 
     @Transient
-    private List<Bid_history> history;
+    private List<BidHistory> history;
+
+    @Transient
+    private List<AuctionPhoto> images;
 }

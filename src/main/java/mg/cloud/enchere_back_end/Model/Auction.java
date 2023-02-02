@@ -1,7 +1,5 @@
 package mg.cloud.enchere_back_end.Model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +7,9 @@ import lombok.Setter;
 import lombok.ToString;
 
 
+import java.security.PrivateKey;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -23,30 +23,31 @@ public class Auction {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "description", nullable = false)
+    private String title;
+
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "app_userid")
-    private App_user appUser;
+    @JoinColumn(name = "app_user_id")
+    private AppUser appUser;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @Column(name = "start_date",nullable = false)
-    private Timestamp start_date;
+    @Column(name = "start_date",nullable = false, columnDefinition = "TIMESTAMPTZ")
+    private LocalDateTime startDate;
 
-    @Column(name = "end_date",nullable = false)
-    private Timestamp end_date;
+    @Column(name = "end_date",nullable = false, columnDefinition = "TIMESTAMPTZ")
+    private LocalDateTime endDate;
 
     @Column(name = "starting_price",nullable = false)
-    private Float starting_price;
+    private Float startingPrice;
 
     @Column(name = "bid_step")
-    private Float bid_step;
+    private Float bidStep;
 
     @ManyToOne
-    @JoinColumn(name = "auction_stateid")
-    private AuctionState auctionState;
+    @JoinColumn(name = "commission_rate_id")
+    private SettingsValueHistory commissionRate;
 }

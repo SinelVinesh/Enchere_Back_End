@@ -2,7 +2,7 @@ package mg.cloud.enchere_back_end.Controller;
 
 import mg.cloud.enchere_back_end.Model.*;
 import mg.cloud.enchere_back_end.response.Response;
-import mg.cloud.enchere_back_end.Service.App_userService;
+import mg.cloud.enchere_back_end.Service.AppUserService;
 import mg.cloud.enchere_back_end.Service.ReloadRequestService;
 import mg.cloud.enchere_back_end.Service.ReloadRequestStateHistoryService;
 import mg.cloud.enchere_back_end.Service.Recharge_StateService;
@@ -10,8 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Date;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -22,8 +20,8 @@ public class ReloadRequestStateHistoryController {
     private final ReloadRequestStateHistoryService reloadRequestStateHistoryService;
     private final Recharge_StateService recharge_stateService;
     private final ReloadRequestService reloadRequestService;
-    private final App_userService app_userService;
-    public ReloadRequestStateHistoryController(ReloadRequestStateHistoryService reloadRequestStateHistoryService, Recharge_StateService recharge_stateService, ReloadRequestService reloadRequestService, App_userService app_userService) {
+    private final AppUserService app_userService;
+    public ReloadRequestStateHistoryController(ReloadRequestStateHistoryService reloadRequestStateHistoryService, Recharge_StateService recharge_stateService, ReloadRequestService reloadRequestService, AppUserService app_userService) {
         this.reloadRequestStateHistoryService = reloadRequestStateHistoryService;
         this.recharge_stateService = recharge_stateService;
         this.reloadRequestService = reloadRequestService;
@@ -59,11 +57,11 @@ public class ReloadRequestStateHistoryController {
             reloadRequestStateHistory.setReloadRequest(appUserRechargeRequest);
             reloadRequestStateHistoryService.saveReloadRequestHistory(reloadRequestStateHistory);
 
-            App_user user = reloadRequestStateHistory.getReloadRequest().getUser();
-            Float account_blance = user.getAccount_balance() + reloadRequestStateHistory.getReloadRequest().getAmount();
+            AppUser user = reloadRequestStateHistory.getReloadRequest().getUser();
+            Float account_blance = user.getAccountBalance() + reloadRequestStateHistory.getReloadRequest().getAmount();
 
-            user.setAccount_balance(account_blance);
-            app_userService.saveApp_user(user);
+            user.setAccountBalance(account_blance);
+            app_userService.saveAppUser(user);
             return new ResponseEntity<>(reloadRequestStateHistory, HttpStatus.CREATED);
         }catch(Exception e){
             Response response = new Response("failed to cancel the recharge request");

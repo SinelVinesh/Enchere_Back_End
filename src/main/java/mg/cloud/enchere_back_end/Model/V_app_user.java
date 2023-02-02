@@ -1,13 +1,10 @@
 package mg.cloud.enchere_back_end.Model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.w3c.dom.views.AbstractView;
 
 @Entity
 @Getter
@@ -23,7 +20,7 @@ public class V_app_user {
 
     @ManyToOne
     @JoinColumn(name = "app_userid")
-    private App_user user;
+    private AppUser user;
 
     @Column(name = "money_can_use")
     private Float money_can_use;

@@ -4,28 +4,34 @@ import jakarta.servlet.http.HttpServletRequest;
 import mg.cloud.enchere_back_end.Model.*;
 import mg.cloud.enchere_back_end.Repository.AuctionRepository;
 import mg.cloud.enchere_back_end.Repository.AuctionWithStateRepository;
-import mg.cloud.enchere_back_end.Service.App_userService;
+import mg.cloud.enchere_back_end.Service.AppUserService;
 import mg.cloud.enchere_back_end.Service.AuctionService;
 import mg.cloud.enchere_back_end.Service.CrudService;
+import mg.cloud.enchere_back_end.exceptions.InvalidValueException;
+import mg.cloud.enchere_back_end.inputs.AuctionInput;
 import mg.cloud.enchere_back_end.response.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
 public class AuctionController {
     private final AuctionService auctionService;
-    private final App_userService app_userService;
+    private final AppUserService app_userService;
     private final CrudService<Auction,Long> crudServiceAuction;
     private final CrudService<AuctionWithState, Long> crudServiceAuctionWithState;
     private final AuctionRepository auctionRepository;
     private final AuctionWithStateRepository auctionWithStateRepository;
     public AuctionController(
             AuctionService auctionService,
-            App_userService app_userService,
+            AppUserService app_userService,
             CrudService<Auction, Long> crudServiceAuction,
             CrudService<AuctionWithState, Long> crudServiceAuctionWithState,
             AuctionRepository auctionRepository,
@@ -40,29 +46,29 @@ public class AuctionController {
     }
 
     @PostMapping("auctions/bid/{app_userid}&{bidid}&{amount}&{date}")
-    public ResponseEntity<?> bid(@PathVariable("app_userid") Long app_userid,@PathVariable("bidid") Long bidid,@PathVariable("amount") float amount,@PathVariable("date") Timestamp date){
-        auctionService.closedAuction();
-        App_user user = app_userService.findById(app_userid);
+    public ResponseEntity<?> bid(@PathVariable("app_userid") Long app_userid,@PathVariable("bidid") Long bidid,@PathVariable("amount") float amount,@PathVariable("date") LocalDateTime date) throws InvalidValueException {
+//        auctionService.closedAuction();
+        AppUser user = app_userService.findById(app_userid);
         V_app_user v_app_user = auctionService.getV_app_user(user.getId());
         if(v_app_user==null){
             v_app_user = new V_app_user();
             v_app_user.setUser(user);
-            v_app_user.setMoney_can_use(user.getAccount_balance());
+            v_app_user.setMoney_can_use(user.getAccountBalance());
         }
 
-        Bid_history bidHistorySecondToLast = auctionService.getSecondToLastBid(bidid);
-        App_user userSecondToLast = null;
+        BidHistory bidHistorySecondToLast = auctionService.getSecondToLastBid(bidid);
+        AppUser userSecondToLast = null;
         if(bidHistorySecondToLast!=null) {
-            userSecondToLast = new App_user();
+            userSecondToLast = new AppUser();
             userSecondToLast.setId(bidHistorySecondToLast.getAppUser().getId());
             userSecondToLast.setUsername(bidHistorySecondToLast.getAppUser().getUsername());
             userSecondToLast.setEmail(bidHistorySecondToLast.getAppUser().getEmail());
             userSecondToLast.setPassword(bidHistorySecondToLast.getAppUser().getPassword());
-            userSecondToLast.setAccount_balance(bidHistorySecondToLast.getAppUser().getAccount_balance());
-            userSecondToLast.setAccount_balance(userSecondToLast.getAccount_balance() + bidHistorySecondToLast.getAmount());
+            userSecondToLast.setAccountBalance(bidHistorySecondToLast.getAppUser().getAccountBalance());
+            userSecondToLast.setAccountBalance(userSecondToLast.getAccountBalance() + bidHistorySecondToLast.getAmount());
         }
 
-        Bid_history bid_history = new Bid_history();
+        BidHistory bid_history = new BidHistory();
         bid_history.setAppUser(user);
         bid_history.setAuction(auctionService.findById(bidid));
         bid_history.setAmount(amount);
@@ -73,12 +79,12 @@ public class AuctionController {
                     if(!auctionService.haveBid_step(bid_history)) {
                         if(auctionService.verifyAmountInBid_step(bid_history)){
 
-                            app_userService.saveApp_user(user);
+                            app_userService.saveAppUser(user);
                             auctionService.saveBid_history(bid_history);
                         }
                     }else {
 
-                            app_userService.saveApp_user(user);
+                            app_userService.saveAppUser(user);
                             auctionService.saveBid_history(bid_history);
                     }
                 }
@@ -94,10 +100,18 @@ public class AuctionController {
     public ResponseEntity<Response> getAuctions(@PathVariable("id") Optional<Long> id, HttpServletRequest request){
         ResponseEntity<Response> response = crudServiceAuctionWithState.handle(request.getMethod(), auctionWithStateRepository, id, null);
         if(response.getBody() != null){
-            auctionService.fillAcutions(response.getBody().getData());
+            List<AuctionWithState> auctions = (List<AuctionWithState>) response.getBody().getData();
+            auctionService.fillAcutions(auctions);
+            auctions.sort(Comparator.comparing(AuctionWithState::getStartDate));
         }
         return response;
     }
+
+    @PostMapping(value={"/auctions"})
+    public ResponseEntity<Response> createAuction(@RequestBody AuctionInput auction, @RequestHeader("Authorization") String token) throws InvalidValueException {
+        return auctionService.createAuction(auction, token);
+    }
+
     @RequestMapping(value={"/auctions","/auctions/{id}"})
     public ResponseEntity<Response> crudAuction(
             @PathVariable("id") Optional<Long> id,
