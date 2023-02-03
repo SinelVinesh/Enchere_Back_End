@@ -53,7 +53,7 @@ public class AuctionController {
         if(v_app_user==null){
             v_app_user = new V_app_user();
             v_app_user.setUser(user);
-            v_app_user.setMoney_can_use(user.getAccountBalance());
+//            v_app_user.setMoney_can_use(user.getUsableBalance());
         }
 
         BidHistory bidHistorySecondToLast = auctionService.getSecondToLastBid(bidid);
@@ -64,8 +64,8 @@ public class AuctionController {
             userSecondToLast.setUsername(bidHistorySecondToLast.getAppUser().getUsername());
             userSecondToLast.setEmail(bidHistorySecondToLast.getAppUser().getEmail());
             userSecondToLast.setPassword(bidHistorySecondToLast.getAppUser().getPassword());
-            userSecondToLast.setAccountBalance(bidHistorySecondToLast.getAppUser().getAccountBalance());
-            userSecondToLast.setAccountBalance(userSecondToLast.getAccountBalance() + bidHistorySecondToLast.getAmount());
+//            userSecondToLast.setBalance(bidHistorySecondToLast.getAppUser().getUsableBalance());
+//            userSecondToLast.setBalance(userSecondToLast.getBalance() + bidHistorySecondToLast.getAmount());
         }
 
         BidHistory bid_history = new BidHistory();

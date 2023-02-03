@@ -56,12 +56,6 @@ public class ReloadRequestStateHistoryController {
             ReloadRequest appUserRechargeRequest = reloadRequestService.findById(id);
             reloadRequestStateHistory.setReloadRequest(appUserRechargeRequest);
             reloadRequestStateHistoryService.saveReloadRequestHistory(reloadRequestStateHistory);
-
-            AppUser user = reloadRequestStateHistory.getReloadRequest().getUser();
-            Float account_blance = user.getAccountBalance() + reloadRequestStateHistory.getReloadRequest().getAmount();
-
-            user.setAccountBalance(account_blance);
-            app_userService.saveAppUser(user);
             return new ResponseEntity<>(reloadRequestStateHistory, HttpStatus.CREATED);
         }catch(Exception e){
             Response response = new Response("failed to cancel the recharge request");

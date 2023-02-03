@@ -188,7 +188,7 @@ public class AuctionService {
     private List<String> savePicture(List<Photo> photos) throws InvalidValueException {
         List<String> paths = new ArrayList<>();
         for(Photo photo : photos){
-            String fileName = "/users/" + DigestUtils.sha1Hex(LocalDateTime.now().toString()) + "." + photo.getFormat();
+            String fileName = "/pictures/" + DigestUtils.sha1Hex(LocalDateTime.now().toString()) + "." + photo.getFormat();
             String completePath = getClass().getClassLoader().getResource(".").getFile() +"static";
             byte[] decodedBytes = Base64.getDecoder().decode(photo.getBase64String());
             Tika tika = new Tika();

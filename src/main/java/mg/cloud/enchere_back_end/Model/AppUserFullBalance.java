@@ -1,15 +1,11 @@
 package mg.cloud.enchere_back_end.Model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import javax.validation.constraints.*;
-
 import lombok.*;
-import mg.cloud.enchere_back_end.exceptions.InvalidValueException;
 
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Email;
 import java.time.LocalDate;
 
 @Getter
@@ -18,9 +14,9 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "app_user")
+@Table(name = "v_user_full_balance")
 @JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
-public class AppUser {
+public class AppUserFullBalance {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
@@ -42,5 +38,10 @@ public class AppUser {
 
     @Column(name = "registration_date",nullable = false, columnDefinition = "DATE")
     private LocalDate registrationDate;
-}
 
+    @Column(name = "total_balance",nullable = false)
+    private float balance;
+
+    @Column(name = "usable_balance",nullable = false)
+    private float usableBalance;
+}

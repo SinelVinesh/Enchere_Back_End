@@ -1,21 +1,40 @@
 package mg.cloud.enchere_back_end.Service;
 
-import mg.cloud.enchere_back_end.Model.AppUser;
-import mg.cloud.enchere_back_end.Model.AppUserToken;
+import mg.cloud.enchere_back_end.Model.*;
+import mg.cloud.enchere_back_end.Repository.AppUserFullBalanceRepository;
 import mg.cloud.enchere_back_end.Repository.AppUserRepository;
+import mg.cloud.enchere_back_end.Repository.AppUserTokenRepository;
+import mg.cloud.enchere_back_end.Repository.UserPhotoRepository;
 import mg.cloud.enchere_back_end.exceptions.InvalidValueException;
 import mg.cloud.enchere_back_end.inputs.AppUserInput;
+import mg.cloud.enchere_back_end.inputs.AppUserUpdateInput;
+import mg.cloud.enchere_back_end.inputs.Photo;
+import mg.cloud.enchere_back_end.response.Response;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Base64;
 import java.util.Optional;
 
 @Service
 public class AppUserService {
     @Autowired
     private AppUserRepository appUserRepository;
+    @Autowired
+    private AppUserFullBalanceRepository appUserFullBalanceRepository;
+    @Autowired
+    private UserPhotoRepository userPhotoRepository;
+    @Autowired
+    private AppUserTokenRepository appUserTokenRepository;
+    @Autowired
+    private UserPhotoRepository photoRepository;
 
     private final AppUserTokenService appUserTokenService;
 
@@ -62,9 +81,86 @@ public class AppUserService {
                 error = "L'adresse email est déjà utilisée";
             throw new InvalidValueException(error);
         }
-        AppUser toSave = new AppUser(null,user.getUsername(),user.getPassword(),user.getEmail(),user.getBirthDate(),LocalDate.now(),0);
+        AppUser toSave = new AppUser();
+        toSave.setUsername(user.getUsername());
+        toSave.setPassword(user.getPassword());
+        toSave.setEmail(user.getEmail());
+        toSave.setBirthDate(user.getBirthDate());
+        toSave.setRegistrationDate(LocalDate.now());
 
         AppUser appUser = saveAppUser(toSave);
         return appUserTokenService.generateToken(appUser);
+    }
+
+    public ResponseEntity<Response> getUser(Long id) throws InvalidValueException {
+        AppUserFullBalance user = appUserFullBalanceRepository.findById(id).orElseThrow(() -> new InvalidValueException("L'utilisateur n'existe pas"));
+        UserPhoto userPhoto = userPhotoRepository.findByUserId(id).orElse(null);
+        AppUserWithPhoto appUserWithPhoto = new AppUserWithPhoto();
+        appUserWithPhoto.setId(user.getId());
+        appUserWithPhoto.setEmail(user.getEmail());
+        appUserWithPhoto.setUsername(user.getUsername());
+        appUserWithPhoto.setBirthDate(user.getBirthDate());
+        appUserWithPhoto.setRegistrationDate(user.getRegistrationDate());
+        appUserWithPhoto.setPhoto(userPhoto);
+        appUserWithPhoto.setBalance(user.getBalance());
+        appUserWithPhoto.setUsableBalance(user.getUsableBalance());
+        return ResponseEntity.ok(new Response(appUserWithPhoto));
+    }
+
+    public ResponseEntity<Response> updateUser(AppUserUpdateInput appUser, String token, Long id) throws InvalidValueException {
+        AppUserToken appUserToken = appUserTokenRepository.findByValue(token.split(" ")[1]).orElseThrow(() -> new InvalidValueException("Le token est invalide"));
+        AppUser user = appUserRepository.findById(appUserToken.getUser().getId()).orElseThrow(() -> new InvalidValueException("L'utilisateur n'existe pas"));
+        if(!user.getId().equals(id)) {
+            throw new InvalidValueException("Vous n'avez pas les droits pour modifier cet utilisateur");
+        }
+        if(appUser.getUsername() != null) {
+            user.setUsername(appUser.getUsername());
+        }
+        if(appUser.getEmail() != null) {
+            user.setEmail(appUser.getEmail());
+        }
+        if(appUser.getPassword() != null) {
+            user.setPassword(appUser.getPassword());
+        }
+        AppUser userResult = appUserRepository.save(user);
+        AppUserFullBalance appUserFullBalance = appUserFullBalanceRepository.findById(userResult.getId()).orElseThrow(() -> new InvalidValueException("L'utilisateur n'existe pas"));
+        AppUserWithPhoto appUserWithPhoto = new AppUserWithPhoto();
+        appUserWithPhoto.setId(appUserFullBalance.getId());
+        appUserWithPhoto.setEmail(appUserFullBalance.getEmail());
+        appUserWithPhoto.setUsername(appUserFullBalance.getUsername());
+        appUserWithPhoto.setBirthDate(appUserFullBalance.getBirthDate());
+        appUserWithPhoto.setRegistrationDate(appUserFullBalance.getRegistrationDate());
+        appUserWithPhoto.setBalance(appUserFullBalance.getBalance());
+        appUserWithPhoto.setUsableBalance(appUserFullBalance.getUsableBalance());
+        if(appUser.getPhoto() != null) {
+            String path = savePhoto(appUser.getPhoto());
+            UserPhoto userPhoto = new UserPhoto();
+            userPhoto.setPhotoPath(path);
+            photoRepository.save(userPhoto);
+            appUserWithPhoto.setPhoto(userPhoto);
+        }
+        return ResponseEntity.ok(new Response(appUserWithPhoto));
+    }
+
+    private String savePhoto(Photo photo) {
+        byte[] decoded = Base64.getDecoder().decode(photo.getBase64String());
+        String fileName = "/pictures/users/" + DigestUtils.sha1Hex(LocalDateTime.now().toString()) + "." + photo.getFormat();
+        try {
+            String completePath = getClass().getClassLoader().getResource(".").getFile() +"static";
+            File file = new File(completePath+fileName);
+            if(!file.getParentFile().exists()) {
+                file.getParentFile().mkdirs();
+            }
+            if(file.createNewFile()){
+                FileOutputStream fos = new FileOutputStream(file);
+                fos.write(decoded);
+                fos.close();
+            } else {
+                throw new IOException("Impossible de créer le fichier");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return fileName;
     }
 }
