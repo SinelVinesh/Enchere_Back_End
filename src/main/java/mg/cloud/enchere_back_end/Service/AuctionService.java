@@ -189,7 +189,7 @@ public class AuctionService {
         List<String> paths = new ArrayList<>();
         for(Photo photo : photos){
             String fileName = "/pictures/" + DigestUtils.sha1Hex(LocalDateTime.now().toString()) + "." + photo.getFormat();
-            System.out.println(new ClassPathResource(".").getPath());
+            System.out.println(new ClassPathResource("pictures").exists());
             String completePath = getClass().getClassLoader().getResource(".").getFile() +"static";
             byte[] decodedBytes = Base64.getDecoder().decode(photo.getBase64String());
             Tika tika = new Tika();
