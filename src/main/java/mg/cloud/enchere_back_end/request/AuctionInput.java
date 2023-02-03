@@ -1,11 +1,13 @@
-package mg.cloud.enchere_back_end.inputs;
+package mg.cloud.enchere_back_end.request;
 
 import lombok.Getter;
 import lombok.Setter;
-import mg.cloud.enchere_back_end.Model.Category;
 import mg.cloud.enchere_back_end.exceptions.InvalidValueException;
+import org.springframework.cglib.core.Local;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -57,12 +59,13 @@ public class AuctionInput {
     }
 
     public void setStartDate(LocalDateTime startDate) throws InvalidValueException {
+        startDate = startDate.plus(3,ChronoUnit.HOURS);
         // verifier que la date de début n'est pas vide
         if (startDate == null) {
             throw new InvalidValueException("La date de début ne peut pas être vide");
         }
         // verifier que la date de début est dans le futur
-        if (startDate.isBefore(LocalDateTime.now().plus(20, ChronoUnit.MINUTES))) {
+        if (startDate.isBefore(LocalDateTime.now().minus(20, ChronoUnit.MINUTES))) {
             throw new InvalidValueException("La date de début doit être dans le futur");
         }
         this.startDate = startDate;

@@ -1,4 +1,4 @@
-package mg.cloud.enchere_back_end.inputs;
+package mg.cloud.enchere_back_end.request;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,31 +1,31 @@
 package mg.cloud.enchere_back_end.Service;
 
-import jakarta.servlet.ServletContext;
 import mg.cloud.enchere_back_end.Model.*;
 import mg.cloud.enchere_back_end.Repository.*;
 import mg.cloud.enchere_back_end.exceptions.InvalidValueException;
-import mg.cloud.enchere_back_end.inputs.AuctionInput;
-import mg.cloud.enchere_back_end.inputs.Photo;
+import mg.cloud.enchere_back_end.request.AuctionInput;
+import mg.cloud.enchere_back_end.request.Photo;
 import mg.cloud.enchere_back_end.response.Response;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
+import java.awt.print.Pageable;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AuctionService {
@@ -133,7 +133,6 @@ public class AuctionService {
                 auctionWithState.setHistory(this.getBidHistory(auctionWithState.getId()));
                 auctionWithState.setImages(this.getPhotos(auctionWithState.getId()));
             }
-            auctionWithStates.sort((a1, a2) -> a2.getStartDate().compareTo(a1.getStartDate()));
         }else{
             AuctionWithState auctionWithState = (AuctionWithState) auctions;
             auctionWithState.setTopBid(this.getTopBid(auctionWithState.getId()));
@@ -162,7 +161,7 @@ public class AuctionService {
         settingsService.fillSettings(commissionSettings);
         SettingsValueHistory commission = commissionSettings.getCurrentValue();
 
-        LocalDateTime endDate = auction.getStartDate().plusHours(Integer.parseInt(duration.getValue()));
+        LocalDateTime endDate = auction.getStartDate().plusMinutes(Integer.parseInt(duration.getValue()));
         Auction toSave = new Auction();
         toSave.setTitle(auction.getTitle());
         toSave.setDescription(auction.getDescription());
@@ -213,5 +212,11 @@ public class AuctionService {
             }
         }
         return paths;
+    }
+
+    public ResponseEntity<?> getAuctionsWithState(int offset) {
+        List<AuctionWithState> auctions = auctionWithStateRepository.findAllByOrderByIdDesc(PageRequest.of(offset,3)).get().collect(Collectors.toList());
+        fillAcutions(auctions);
+        return ResponseEntity.ok(new Response(auctions));
     }
 }

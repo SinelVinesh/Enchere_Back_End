@@ -8,14 +8,13 @@ import mg.cloud.enchere_back_end.Service.AppUserService;
 import mg.cloud.enchere_back_end.Service.AuctionService;
 import mg.cloud.enchere_back_end.Service.CrudService;
 import mg.cloud.enchere_back_end.exceptions.InvalidValueException;
-import mg.cloud.enchere_back_end.inputs.AuctionInput;
+import mg.cloud.enchere_back_end.request.AuctionInput;
 import mg.cloud.enchere_back_end.response.Response;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -27,6 +26,8 @@ public class AuctionController {
     private final CrudService<AuctionWithState, Long> crudServiceAuctionWithState;
     private final AuctionRepository auctionRepository;
     private final AuctionWithStateRepository auctionWithStateRepository;
+
+
     public AuctionController(
             AuctionService auctionService,
             AppUserService app_userService,
@@ -94,13 +95,18 @@ public class AuctionController {
         return new ResponseEntity<>(bid_history, HttpStatus.OK);
     }
 
-    @GetMapping(value={"/auctions","/auctions/{id}"})
+    @GetMapping(value={"/auctions/{id}"})
     public ResponseEntity<Response> getAuctions(@PathVariable("id") Optional<Long> id, HttpServletRequest request){
         ResponseEntity<Response> response = crudServiceAuctionWithState.handle(request.getMethod(), auctionWithStateRepository, id, null);
         if(response.getBody() != null){
             auctionService.fillAcutions(response.getBody().getData());
         }
         return response;
+    }
+
+    @GetMapping(value={"/auctionsOffset/{offset}"})
+    public ResponseEntity<?> getAuctionOffset(@PathVariable int offset) {
+        return auctionService.getAuctionsWithState(offset);
     }
 
     @PostMapping(value={"/auctions"})

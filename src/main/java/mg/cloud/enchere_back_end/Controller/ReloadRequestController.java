@@ -1,16 +1,12 @@
 package mg.cloud.enchere_back_end.Controller;
 
 import jakarta.servlet.http.HttpServletRequest;
-import mg.cloud.enchere_back_end.Model.Auction;
-import mg.cloud.enchere_back_end.Model.ReloadRequest;
-import mg.cloud.enchere_back_end.Model.ReloadRequestStateHistory;
-import mg.cloud.enchere_back_end.Model.ReloadState;
+import mg.cloud.enchere_back_end.Model.*;
+import mg.cloud.enchere_back_end.Repository.AppUserTokenRepository;
 import mg.cloud.enchere_back_end.Repository.ReloadRequestRepository;
-import mg.cloud.enchere_back_end.Service.CrudService;
+import mg.cloud.enchere_back_end.Service.*;
+import mg.cloud.enchere_back_end.exceptions.InvalidValueException;
 import mg.cloud.enchere_back_end.response.Response;
-import mg.cloud.enchere_back_end.Service.ReloadRequestService;
-import mg.cloud.enchere_back_end.Service.ReloadRequestStateHistoryService;
-import mg.cloud.enchere_back_end.Service.Recharge_StateService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,26 +23,39 @@ public class ReloadRequestController {
     private final Recharge_StateService recharge_stateService;
     private final CrudService<ReloadRequest, Long> reloadRequestCrudService;
     private final ReloadRequestRepository reloadRequestRepository;
+    private final AppUserTokenRepository appUserTokenRepository;
 
     public ReloadRequestController(
             ReloadRequestService reloadRequestService,
             ReloadRequestStateHistoryService reloadRequestStateHistoryService,
             Recharge_StateService recharge_stateService,
             CrudService<ReloadRequest, Long> reloadRequestCrudService,
-            ReloadRequestRepository reloadRequestRepository
+            ReloadRequestRepository reloadRequestRepository,
+            AppUserTokenRepository appUserTokenRepository
     ) {
         this.reloadRequestService = reloadRequestService;
         this.reloadRequestStateHistoryService = reloadRequestStateHistoryService;
         this.recharge_stateService = recharge_stateService;
         this.reloadRequestCrudService = reloadRequestCrudService;
         this.reloadRequestRepository = reloadRequestRepository;
+        this.appUserTokenRepository =appUserTokenRepository;
     }
 
     @RequestMapping(value={"/reloads/request","/reloads/request/{id}","/reloads"})
     public ResponseEntity<Response> crudAuction(
             @PathVariable("id") Optional<Long> id,
             @RequestBody Optional<ReloadRequest> reloadRequest,
-            HttpServletRequest request) {
+            HttpServletRequest request,
+            @RequestHeader("Authorization") String token) throws InvalidValueException {
+        if(request.getMethod().equals("POST") && reloadRequest.isPresent()) {
+            AppUserToken appUserToken = appUserTokenRepository.findByValue(token.split(" ")[1]).orElseThrow(() -> new InvalidValueException("Token invalide"));
+            if(!appUserToken.getUser().getId().equals(reloadRequest.get().getUser().getId())) {
+                throw new InvalidValueException("Vous n'avez pas l'authorization d'effectuer cette operation ");
+            }
+            if(reloadRequest.get().getAmount() < 0) {
+                throw new InvalidValueException("Le montant ne peut pas etre negatif");
+            }
+        }
         ReloadRequest data = reloadRequest.orElse(null);
         ResponseEntity<Response> response= reloadRequestCrudService.handle(request.getMethod(), reloadRequestRepository, id, data);
         if(request.getMethod().equals("POST") && response.getBody().getData() != null) {
