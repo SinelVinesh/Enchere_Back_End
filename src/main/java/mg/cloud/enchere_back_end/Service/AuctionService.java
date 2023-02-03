@@ -9,6 +9,7 @@ import mg.cloud.enchere_back_end.response.Response;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -188,6 +189,8 @@ public class AuctionService {
         List<String> paths = new ArrayList<>();
         for(Photo photo : photos){
             String fileName = "/pictures/" + DigestUtils.sha1Hex(LocalDateTime.now().toString()) + "." + photo.getFormat();
+            System.out.println(getClass().getClassLoader().getResource("."));
+            System.out.println(new ClassPathResource(".").getFilename());
             String completePath = getClass().getClassLoader().getResource(".").getFile() +"static";
             byte[] decodedBytes = Base64.getDecoder().decode(photo.getBase64String());
             Tika tika = new Tika();
