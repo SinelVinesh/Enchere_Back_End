@@ -141,11 +141,18 @@ public class AppUserService {
         appUserWithPhoto.setUsableBalance(appUserFullBalance.getUsableBalance());
         if(appUser.getPhoto() != null) {
             String path = savePhoto(appUser.getPhoto());
-            UserPhoto userPhoto = new UserPhoto();
-            userPhoto.setPhotoPath(path);
-            userPhoto.setUserId(user.getId());
-            photoRepository.save(userPhoto);
-            appUserWithPhoto.setPhoto(userPhoto);
+            Optional<UserPhoto> userPhoto = userPhotoRepository.findByUserId(user.getId());
+            UserPhoto photo = null;
+            if(userPhoto.isPresent()) {
+                photo = userPhoto.get();
+                photo.setPhotoPath(path);
+            } else {
+                photo = new UserPhoto();
+                photo.setPhotoPath(path);
+                photo.setUserId(user.getId());
+            }
+            photoRepository.save(photo);
+            appUserWithPhoto.setPhoto(photo);
         }
         return ResponseEntity.ok(new Response(appUserWithPhoto));
     }
