@@ -48,12 +48,12 @@ public class AuctionController {
     public ResponseEntity<?> bid(@PathVariable("app_userid") Long app_userid,@PathVariable("bidid") Long bidid,@PathVariable("amount") float amount,@PathVariable("date") LocalDateTime date) throws InvalidValueException {
 //        auctionService.closedAuction();
         AppUser user = app_userService.findById(app_userid);
-        V_app_user v_app_user = auctionService.getV_app_user(user.getId());
-        if(v_app_user==null){
-            v_app_user = new V_app_user();
-            v_app_user.setUser(user);
+//        V_app_user v_app_user = auctionService.getV_app_user(user.getId());
+//        if(v_app_user==null){
+//            v_app_user = new V_app_user();
+//            v_app_user.setUser(user);
 //            v_app_user.setMoney_can_use(user.getUsableBalance());
-        }
+//        }
 
         BidHistory bidHistorySecondToLast = auctionService.getSecondToLastBid(bidid);
         AppUser userSecondToLast = null;
@@ -72,27 +72,28 @@ public class AuctionController {
         bid_history.setAuction(auctionService.findById(bidid));
         bid_history.setAmount(amount);
         bid_history.setDate(date);
-        try{
-            if(auctionService.verifyAuction(bid_history)) {
-                if (auctionService.haveAmount(bid_history,v_app_user)) {
-                    if(!auctionService.haveBid_step(bid_history)) {
-                        if(auctionService.verifyAmountInBid_step(bid_history)){
-
-                            app_userService.saveAppUser(user);
-                            auctionService.saveBid_history(bid_history);
-                        }
-                    }else {
-
-                            app_userService.saveAppUser(user);
-                            auctionService.saveBid_history(bid_history);
-                    }
-                }
-            }
-        }catch (Exception e){
-            Response response = new Response(e.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(bid_history, HttpStatus.OK);
+//        try{
+//            if(auctionService.verifyAuction(bid_history)) {
+//                if (auctionService.haveAmount(bid_history,v_app_user)) {
+//                    if(!auctionService.haveBid_step(bid_history)) {
+//                        if(auctionService.verifyAmountInBid_step(bid_history)){
+//
+//                            app_userService.saveAppUser(user);
+//                            auctionService.saveBid_history(bid_history);
+//                        }
+//                    }else {
+//
+//                            app_userService.saveAppUser(user);
+//                            auctionService.saveBid_history(bid_history);
+//                    }
+//                }
+//            }
+//        }catch (Exception e){
+//            Response response = new Response(e.getMessage());
+//            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+//        }
+//        return new ResponseEntity<>(bid_history, HttpStatus.OK);
+        return null;
     }
 
     @GetMapping(value={"/auctions/{id}"})

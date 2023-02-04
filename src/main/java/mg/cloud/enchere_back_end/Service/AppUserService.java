@@ -1,5 +1,9 @@
 package mg.cloud.enchere_back_end.Service;
 
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.BlobId;
+import com.google.cloud.storage.BlobInfo;
+import com.google.cloud.storage.Storage;
 import mg.cloud.enchere_back_end.Model.*;
 import mg.cloud.enchere_back_end.Repository.AppUserFullBalanceRepository;
 import mg.cloud.enchere_back_end.Repository.AppUserRepository;
@@ -11,6 +15,7 @@ import mg.cloud.enchere_back_end.request.AppUserUpdateInput;
 import mg.cloud.enchere_back_end.request.Photo;
 import mg.cloud.enchere_back_end.response.Response;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -35,6 +40,8 @@ public class AppUserService {
     private AppUserTokenRepository appUserTokenRepository;
     @Autowired
     private UserPhotoRepository photoRepository;
+    @Autowired
+    private Storage storage;
 
     private final AppUserTokenService appUserTokenService;
 
@@ -136,31 +143,25 @@ public class AppUserService {
             String path = savePhoto(appUser.getPhoto());
             UserPhoto userPhoto = new UserPhoto();
             userPhoto.setPhotoPath(path);
+            userPhoto.setUserId(user.getId());
             photoRepository.save(userPhoto);
             appUserWithPhoto.setPhoto(userPhoto);
         }
         return ResponseEntity.ok(new Response(appUserWithPhoto));
     }
 
-    private String savePhoto(Photo photo) {
+    private String savePhoto(Photo photo) throws InvalidValueException {
         byte[] decoded = Base64.getDecoder().decode(photo.getBase64String());
-        String fileName = "/pictures/users/" + DigestUtils.sha1Hex(LocalDateTime.now().toString()) + "." + photo.getFormat();
-        try {
-            String completePath = getClass().getClassLoader().getResource(".").getFile() +"static";
-            File file = new File(completePath+fileName);
-            if(!file.getParentFile().exists()) {
-                file.getParentFile().mkdirs();
-            }
-            if(file.createNewFile()){
-                FileOutputStream fos = new FileOutputStream(file);
-                fos.write(decoded);
-                fos.close();
-            } else {
-                throw new IOException("Impossible de créer le fichier");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        Tika tika = new Tika();
+        String mimeType = tika.detect(decoded).split("/")[0];
+        if(!mimeType.equals("image")){
+            throw new InvalidValueException("Le fichier envoyé n'est pas une image");
         }
-        return fileName;
+        String fileName = "/images/" + DigestUtils.sha1Hex(LocalDateTime.now().toString()) + "." + photo.getFormat();
+        BlobId blobId = BlobId.of("enchereapp",fileName);
+        BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("image/"+photo.getFormat()).build();
+        Blob blob = storage.create(blobInfo, decoded);
+        System.out.println(blob.getMediaLink());
+        return blob.getMediaLink();
     }
 }

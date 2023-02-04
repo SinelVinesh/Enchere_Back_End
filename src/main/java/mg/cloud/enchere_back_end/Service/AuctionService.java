@@ -1,5 +1,9 @@
 package mg.cloud.enchere_back_end.Service;
 
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.BlobId;
+import com.google.cloud.storage.BlobInfo;
+import com.google.cloud.storage.Storage;
 import mg.cloud.enchere_back_end.Model.*;
 import mg.cloud.enchere_back_end.Repository.*;
 import mg.cloud.enchere_back_end.exceptions.InvalidValueException;
@@ -35,9 +39,6 @@ public class AuctionService {
 
     @Autowired
     private Bid_historyRepository bid_historyRepository;
-
-    @Autowired
-    private V_app_userRepository v_app_userRepository;
     @Autowired
     private AuctionStateRepository auctionStateRepository;
     @Autowired
@@ -54,7 +55,8 @@ public class AuctionService {
     private SettingsService settingsService;
     @Autowired
     private AuctionPhotoRepository auctionPhotoRepository;
-
+    @Autowired
+    private Storage storage;
 
     public Auction saveAuction(Auction auction){
         return auctionRepository.save(auction);
@@ -62,10 +64,6 @@ public class AuctionService {
 
     public BidHistory saveBid_history(BidHistory bid_history){
         return bid_historyRepository.save(bid_history);
-    }
-    public boolean haveAmount(BidHistory bid_history, V_app_user v_app_user) throws Exception {
-        if((v_app_user.getMoney_can_use() < bid_history.getAmount()) || (bid_history.getAmount() < bid_history.getAuction().getStartingPrice()) ) throw new Exception("your account balance is not valid");
-       return true;
     }
 
     public boolean haveBid_step(BidHistory bid_history) {
@@ -91,11 +89,6 @@ public class AuctionService {
     public BidHistory getSecondToLastBid(Long id){
         if(bid_historyRepository.getSecondToLastBid(id).isPresent())return bid_historyRepository.getSecondToLastBid(id).get();
         return null;
-    }
-
-    public V_app_user getV_app_user(Long id){
-       Optional<V_app_user> vap = v_app_userRepository.getV_app_user(id);
-        return vap.orElse(null);
     }
 
     public List<BidHistory> getAuctionNotClosed(){
@@ -188,37 +181,28 @@ public class AuctionService {
     private List<String> savePicture(List<Photo> photos) throws InvalidValueException {
         List<String> paths = new ArrayList<>();
         for(Photo photo : photos){
-            String fileName = "/pictures/" + DigestUtils.sha1Hex(LocalDateTime.now().toString()) + "." + photo.getFormat();
-            System.out.println(new ClassPathResource("pictures").exists());
-            String completePath = getClass().getClassLoader().getResource(".").getFile() +"static";
             byte[] decodedBytes = Base64.getDecoder().decode(photo.getBase64String());
             Tika tika = new Tika();
             String mimeType = tika.detect(decodedBytes).split("/")[0];
             if(!mimeType.equals("image")){
                 throw new InvalidValueException("Le fichier envoyé n'est pas une image");
             }
-            try {
-                File file = new File(completePath+fileName);
-                if(!file.getParentFile().exists()) {
-                    file.getParentFile().mkdirs();
-                }
-                if(file.createNewFile()){
-                    FileOutputStream fos = new FileOutputStream(file);
-                    fos.write(decodedBytes);
-                    fos.close();
-                    paths.add(fileName);
-                }
-                throw new IOException("Impossible de créer le fichier");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            String fileName = "images/"+DigestUtils.sha1Hex(LocalDateTime.now().toString()) + "." + photo.getFormat();
+            BlobId blobId = BlobId.of("enchereapp",fileName);
+            BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("image/"+photo.getFormat()).build();
+            Blob blob = storage.create(blobInfo, decodedBytes);
+            System.out.println(blob.getMediaLink());
+            paths.add(blob.getMediaLink());
         }
         return paths;
     }
 
     public ResponseEntity<?> getAuctionsWithState(int offset) {
-        List<AuctionWithState> auctions = auctionWithStateRepository.findAllByOrderByIdDesc(PageRequest.of(offset,3)).get().collect(Collectors.toList());
-        fillAcutions(auctions);
+        List<AuctionWithState> auctions = auctionWithStateRepository.findAllByOrderByEndDateDesc(PageRequest.of(offset,3)).get().collect(Collectors.toList());
+        for (AuctionWithState auctionWithState : auctions) {
+            auctionWithState.setTopBid(this.getTopBid(auctionWithState.getId()));
+            auctionWithState.setImages(this.getPhotos(auctionWithState.getId()));
+        }
         return ResponseEntity.ok(new Response(auctions));
     }
 }

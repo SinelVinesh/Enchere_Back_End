@@ -11,5 +11,5 @@ import java.util.List;
 
 public interface AuctionWithStateRepository extends JpaRepository<AuctionWithState, Long> {
     List<AuctionWithState> findAllByEndDateIsAfter(Timestamp time);
-    Page<AuctionWithState> findAllByOrderByIdDesc(Pageable pageable);
+    Page<AuctionWithState> findAllByOrderByEndDateDesc(Pageable pageable);
 }
