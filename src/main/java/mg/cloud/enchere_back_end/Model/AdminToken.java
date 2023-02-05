@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @ToString
 @RequiredArgsConstructor
 @Table(name = "admin_token")
-public class Admin_token {
+public class AdminToken {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)

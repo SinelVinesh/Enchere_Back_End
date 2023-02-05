@@ -27,9 +27,9 @@ public class AdminService {
         if(data.isPresent()){
             Admin adminAccount = data.get();
             if(adminAccount.getPassword().equals(admin.getPassword())){
-                HashMap<String,String> responseData = new HashMap<>();
+                HashMap<String,Object> responseData = new HashMap<>();
                 responseData.put("token",admin_tokenService.generateToken(adminAccount));
-                return ResponseEntity.ok(new Response((Object)responseData));
+                return ResponseEntity.ok(new Response(responseData));
             } else {
                 return ResponseEntity.badRequest().body(new Response("Le mot de passe saisie est incorrecte"));
             }
