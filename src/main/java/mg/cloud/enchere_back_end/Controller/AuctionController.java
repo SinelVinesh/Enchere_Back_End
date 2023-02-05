@@ -180,10 +180,11 @@ public class AuctionController {
 
     }
 
-    @GetMapping("/auctions/recentAuction")
+    @GetMapping("/auctions/recentAuction/{id}")
     public ResponseEntity<?> recentAuction(
+            @PathVariable("id") Long id
     ){
-        List<AuctionWithState> auctionState = auctionService.getAuctionListDesc();
+        List<AuctionWithState> auctionState = auctionService.getAuctionListDesc(id);
         auctionService.fillAcutions(auctionState);
         HashMap<String, Object> responseData = new HashMap<>();
         if(auctionState!=null){
@@ -219,7 +220,7 @@ public class AuctionController {
             @PathVariable("id") Long id
 
     ){
-        List<AuctionWithState> auctionList = auctionService.getAuctionListDesc();
+        List<AuctionWithState> auctionList = auctionService.getAuctionListDesc(id);
         auctionService.fillLastMise(auctionList,id);
         List<AuctionWithState> auctionListMised = new ArrayList<>();
         HashMap<String, Object> responseData = new HashMap<>();

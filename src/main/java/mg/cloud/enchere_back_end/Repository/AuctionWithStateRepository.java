@@ -12,8 +12,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AuctionWithStateRepository extends JpaRepository<AuctionWithState, Long> {
-    @Query(value = "select a.* from v_auction_with_state a where state_id = 1 order by start_date desc",nativeQuery = true)
-    Optional<List<AuctionWithState>> getAuctionListDesc();
+    @Query(value = "select a.* from v_auction_with_state a where state_id = 1 and app_user_id != :id order by start_date desc",nativeQuery = true)
+    Optional<List<AuctionWithState>> getAuctionListDesc(Long id);
 
     List<AuctionWithState> findAllByEndDateIsAfter(Timestamp time);
     Page<AuctionWithState> findAllByOrderByIdDesc(Pageable pageable);

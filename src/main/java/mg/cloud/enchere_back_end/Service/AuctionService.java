@@ -81,7 +81,7 @@ public class AuctionService {
     }
 
     public boolean verifyAuction(BidHistory bid_history) throws Exception {
-        if(bid_history.getAuction().getEndDate().compareTo(bid_history.getDate()) < 0) throw new Exception("The Auction is no longer available");
+        if(bid_history.getAuction().getEndDate().compareTo(bid_history.getDate()) < 0 && this.isUserAuction(bid_history.getAuction().getId(), bid_history.getAuction().getAppUser().getId())) throw new Exception("The Auction is no longer available");
         return true;
     }
 
@@ -129,7 +129,11 @@ public class AuctionService {
     public List<BidHistory> getBidHistory(Long auctionId) {
         return bid_historyRepository.findByAuctionIdOrderByDateDesc(auctionId).orElse(null);
     }
+    public boolean isUserAuction(Long userid,Long auctionid){
+        Auction auction = auctionRepository.isUserAuction(userid, auctionid).orElse(null);
+        return auction == null;
 
+    }
     @SuppressWarnings("unchecked")
     public void fillAcutions(Object auctions) {
         if(auctions instanceof List){
@@ -369,8 +373,8 @@ public class AuctionService {
         return auctionStateRepository.findAll();
     }
 
-    public List<AuctionWithState> getAuctionListDesc(){
-        return auctionWithStateRepository.getAuctionListDesc().orElse(null);
+    public List<AuctionWithState> getAuctionListDesc(Long id){
+        return auctionWithStateRepository.getAuctionListDesc(id).orElse(null);
     }
 
     public Integer count(Long id){
