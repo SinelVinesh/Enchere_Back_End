@@ -1,0 +1,90 @@
+ALTER TABLE "public".admin_token DROP CONSTRAINT fk45tsmp4upmy0cqnx24ogofg5l;
+ALTER TABLE "public".admin_token DROP CONSTRAINT fkadmin_toke154889;
+ALTER TABLE "public".app_user_recharge_request DROP CONSTRAINT fkapp_user_r80032;
+ALTER TABLE "public".app_user_recharge_request DROP CONSTRAINT fkaw4fche0898prj4i4eptphkk9;
+ALTER TABLE "public".reloadRequestStateHistory DROP CONSTRAINT fk3h347iq1irow5k7waa9sivjyl;
+ALTER TABLE "public".reloadRequestStateHistory DROP CONSTRAINT fkapp_user_r630701;
+ALTER TABLE "public".reloadRequestStateHistory DROP CONSTRAINT fk7cpdka9p8q6ctx2r4teyfypja;
+ALTER TABLE "public".reloadRequestStateHistory DROP CONSTRAINT fkapp_user_r279062;
+ALTER TABLE "public".app_user_token DROP CONSTRAINT fkapp_user_t445450;
+ALTER TABLE "public".app_user_token DROP CONSTRAINT fkdrmoqofasods84jfbmkge0j7w;
+ALTER TABLE "public".auction DROP CONSTRAINT fkauction314945;
+ALTER TABLE "public".auction DROP CONSTRAINT fkhq6yj95ecwfle2h477um77te7;
+ALTER TABLE "public".auction DROP CONSTRAINT fkauction439414;
+ALTER TABLE "public".auction DROP CONSTRAINT fkn177e55w3c2qy0osa460lcmgc;
+ALTER TABLE "public".bid_history DROP CONSTRAINT fkbid_histor887760;
+ALTER TABLE "public".bid_history DROP CONSTRAINT fkokx2lgase9px5idycif457o49;
+ALTER TABLE "public".bid_history DROP CONSTRAINT fk3lc852lybkc6m75vxn3ffnpir;
+ALTER TABLE "public".bid_history DROP CONSTRAINT fkbid_histor407877;
+ALTER TABLE "public".commision DROP CONSTRAINT fkcommision295386;
+ALTER TABLE "public".commision DROP CONSTRAINT fkcommision804390;
+ALTER TABLE setting_value_history DROP CONSTRAINT FKsetting_va113721;
+ALTER TABLE "public".auction DROP CONSTRAINT FKauction807511;
+DROP VIEW IF EXISTS "public".v_app_user;
+DROP TABLE IF EXISTS "public".admin CASCADE;
+DROP TABLE IF EXISTS "public".admin_token CASCADE;
+DROP TABLE IF EXISTS "public".app_user CASCADE;
+DROP TABLE IF EXISTS "public".app_user_recharge_request CASCADE;
+DROP TABLE IF EXISTS "public".reloadRequestStateHistory CASCADE;
+DROP TABLE IF EXISTS "public".app_user_token CASCADE;
+DROP TABLE IF EXISTS "public".auction CASCADE;
+DROP TABLE IF EXISTS "public".bid_history CASCADE;
+DROP TABLE IF EXISTS "public".bid_photos CASCADE;
+DROP TABLE IF EXISTS "public".category CASCADE;
+DROP TABLE IF EXISTS "public".commision CASCADE;
+DROP TABLE IF EXISTS "public".daily_auction CASCADE;
+DROP TABLE IF EXISTS "public".daily_sales CASCADE;
+DROP TABLE IF EXISTS "public".setting CASCADE;
+DROP TABLE IF EXISTS "public".recharge_state CASCADE;
+DROP TABLE IF EXISTS setting_value_history CASCADE;
+DROP TABLE IF EXISTS auction_state CASCADE;
+CREATE TABLE "public".admin (id serial NOT NULL, username varchar(20) NOT NULL, email varchar(20) NOT NULL, password varchar(20) NOT NULL, CONSTRAINT admin_pkey PRIMARY KEY (id), CONSTRAINT admin_username_key UNIQUE (username), CONSTRAINT admin_email_key UNIQUE (email));
+CREATE TABLE "public".admin_token (id serial NOT NULL, value varchar(255) NOT NULL, expiration_date timestamp(6) NOT NULL, creation_date timestamp(6) NOT NULL, adminid int4 NOT NULL, CONSTRAINT admin_token_pkey PRIMARY KEY (id));
+CREATE TABLE "public".app_user (id serial NOT NULL, username varchar(20) NOT NULL, email varchar(20) NOT NULL, password varchar(20) NOT NULL, account_balance float4 NOT NULL, CONSTRAINT app_user_pkey PRIMARY KEY (id), CONSTRAINT app_user_email_key UNIQUE (email), CONSTRAINT app_user_username_key UNIQUE (username));
+CREATE TABLE "public".app_user_recharge_request (id serial NOT NULL, "date" date NOT NULL, amount float4 NOT NULL, app_userid int4 NOT NULL, CONSTRAINT app_user_recharge_request_pkey PRIMARY KEY (id));
+CREATE TABLE "public".reloadRequestStateHistory (id serial NOT NULL, "date" date, app_user_recharge_requestid int4 NOT NULL, recharge_stateid int4 NOT NULL, CONSTRAINT app_user_recharge_state_history_pkey PRIMARY KEY (id));
+CREATE TABLE "public".app_user_token (id serial NOT NULL, value varchar(255) NOT NULL, expiration_date timestamp(6) NOT NULL, creation_date timestamp(6) NOT NULL, app_userid int4 NOT NULL, CONSTRAINT app_user_token_pkey PRIMARY KEY (id));
+CREATE TABLE "public".auction (id serial NOT NULL, description text NOT NULL, app_userid int4 NOT NULL, category_id int4 NOT NULL, start_date timestamp(6) NOT NULL, end_date timestamp(6) NOT NULL, starting_price float4, bid_step float4, auction_stateid int4 NOT NULL, CONSTRAINT auction_pkey PRIMARY KEY (id));
+CREATE TABLE "public".bid_history (id serial NOT NULL, amount float4 NOT NULL, "date" timestamp(6) NOT NULL, app_userid int4 NOT NULL, bidid int4 NOT NULL, CONSTRAINT bid_history_pkey PRIMARY KEY (id));
+CREATE TABLE "public".bid_photos (id serial NOT NULL, bid_id int4 NOT NULL, picture bytea NOT NULL, CONSTRAINT bid_photos_pkey PRIMARY KEY (id));
+CREATE TABLE "public".category (id serial NOT NULL, name varchar(20) NOT NULL, CONSTRAINT category_pkey PRIMARY KEY (id));
+CREATE TABLE "public".commision (id serial NOT NULL, amount float4 NOT NULL, parametersid int4 NOT NULL, auctionid int4 NOT NULL, CONSTRAINT commision_pkey PRIMARY KEY (id));
+CREATE TABLE "public".daily_auction (id BIGSERIAL NOT NULL, amount float4, "date" timestamp(6), CONSTRAINT daily_auction_pkey PRIMARY KEY (id));
+CREATE TABLE "public".daily_sales (id BIGSERIAL NOT NULL, amount float4, "date" timestamp(6), CONSTRAINT daily_sales_pkey PRIMARY KEY (id));
+CREATE TABLE "public".setting (id serial NOT NULL, "key" varchar(255) NOT NULL, creation_date date NOT NULL, CONSTRAINT parameters_pkey PRIMARY KEY (id));
+CREATE TABLE "public".recharge_state (id serial NOT NULL, description varchar(50) NOT NULL, CONSTRAINT recharge_state_pkey PRIMARY KEY (id));
+CREATE TABLE setting_value_history (id SERIAL NOT NULL, update_date date NOT NULL, Value varchar(255) NOT NULL, setiingid int4 NOT NULL, PRIMARY KEY (id));
+CREATE TABLE auction_state (id SERIAL NOT NULL, Value varchar(25) NOT NULL, PRIMARY KEY (id));
+create view v_app_user as  SELECT (row_number() OVER (ORDER BY b.app_userid))::integer AS id,
+    b.app_userid,
+    (au.account_balance - sum(b.amount)) AS money_can_use
+   FROM (bid_history b
+     JOIN app_user au ON ((b.app_userid = au.id)))
+  WHERE (b.id IN ( SELECT max(b_1.id) AS max
+           FROM bid_history b_1
+          GROUP BY b_1.bidid))
+  GROUP BY b.app_userid, au.account_balance;
+CREATE INDEX setting_value_history_id ON setting_value_history (id);
+CREATE INDEX auction_state_id ON auction_state (id);
+ALTER TABLE "public".admin_token ADD CONSTRAINT fk45tsmp4upmy0cqnx24ogofg5l FOREIGN KEY (adminid) REFERENCES "public".admin (id) ON UPDATE No action ON DELETE No action;
+ALTER TABLE "public".admin_token ADD CONSTRAINT fkadmin_toke154889 FOREIGN KEY (adminid) REFERENCES "public".admin (id) ON UPDATE No action ON DELETE No action;
+ALTER TABLE "public".app_user_recharge_request ADD CONSTRAINT fkapp_user_r80032 FOREIGN KEY (app_userid) REFERENCES "public".app_user (id) ON UPDATE No action ON DELETE No action;
+ALTER TABLE "public".app_user_recharge_request ADD CONSTRAINT fkaw4fche0898prj4i4eptphkk9 FOREIGN KEY (app_userid) REFERENCES "public".app_user (id) ON UPDATE No action ON DELETE No action;
+ALTER TABLE "public".reloadRequestStateHistory ADD CONSTRAINT fk3h347iq1irow5k7waa9sivjyl FOREIGN KEY (app_user_recharge_requestid) REFERENCES "public".app_user_recharge_request (id) ON UPDATE No action ON DELETE No action;
+ALTER TABLE "public".reloadRequestStateHistory ADD CONSTRAINT fkapp_user_r630701 FOREIGN KEY (app_user_recharge_requestid) REFERENCES "public".app_user_recharge_request (id) ON UPDATE No action ON DELETE No action;
+ALTER TABLE "public".reloadRequestStateHistory ADD CONSTRAINT fk7cpdka9p8q6ctx2r4teyfypja FOREIGN KEY (recharge_stateid) REFERENCES "public".recharge_state (id) ON UPDATE No action ON DELETE No action;
+ALTER TABLE "public".reloadRequestStateHistory ADD CONSTRAINT fkapp_user_r279062 FOREIGN KEY (recharge_stateid) REFERENCES "public".recharge_state (id) ON UPDATE No action ON DELETE No action;
+ALTER TABLE "public".app_user_token ADD CONSTRAINT fkapp_user_t445450 FOREIGN KEY (app_userid) REFERENCES "public".app_user (id) ON UPDATE No action ON DELETE No action;
+ALTER TABLE "public".app_user_token ADD CONSTRAINT fkdrmoqofasods84jfbmkge0j7w FOREIGN KEY (app_userid) REFERENCES "public".app_user (id) ON UPDATE No action ON DELETE No action;
+ALTER TABLE "public".auction ADD CONSTRAINT fkauction314945 FOREIGN KEY (app_userid) REFERENCES "public".app_user (id) ON UPDATE No action ON DELETE No action;
+ALTER TABLE "public".auction ADD CONSTRAINT fkhq6yj95ecwfle2h477um77te7 FOREIGN KEY (app_userid) REFERENCES "public".app_user (id) ON UPDATE No action ON DELETE No action;
+ALTER TABLE "public".auction ADD CONSTRAINT fkauction439414 FOREIGN KEY (category_id) REFERENCES "public".category (id) ON UPDATE No action ON DELETE No action;
+ALTER TABLE "public".auction ADD CONSTRAINT fkn177e55w3c2qy0osa460lcmgc FOREIGN KEY (category_id) REFERENCES "public".category (id) ON UPDATE No action ON DELETE No action;
+ALTER TABLE "public".bid_history ADD CONSTRAINT fkbid_histor887760 FOREIGN KEY (app_userid) REFERENCES "public".app_user (id) ON UPDATE No action ON DELETE No action;
+ALTER TABLE "public".bid_history ADD CONSTRAINT fkokx2lgase9px5idycif457o49 FOREIGN KEY (app_userid) REFERENCES "public".app_user (id) ON UPDATE No action ON DELETE No action;
+ALTER TABLE "public".bid_history ADD CONSTRAINT fk3lc852lybkc6m75vxn3ffnpir FOREIGN KEY (bidid) REFERENCES "public".auction (id) ON UPDATE No action ON DELETE No action;
+ALTER TABLE "public".bid_history ADD CONSTRAINT fkbid_histor407877 FOREIGN KEY (bidid) REFERENCES "public".auction (id) ON UPDATE No action ON DELETE No action;
+ALTER TABLE "public".commision ADD CONSTRAINT fkcommision295386 FOREIGN KEY (parametersid) REFERENCES "public".setting (id) ON UPDATE No action ON DELETE No action;
+ALTER TABLE "public".commision ADD CONSTRAINT fkcommision804390 FOREIGN KEY (auctionid) REFERENCES "public".auction (id) ON UPDATE No action ON DELETE No action;
+ALTER TABLE setting_value_history ADD CONSTRAINT FKsetting_va113721 FOREIGN KEY (setiingid) REFERENCES "public".setting (id);
+ALTER TABLE "public".auction ADD CONSTRAINT FKauction807511 FOREIGN KEY (auction_stateid) REFERENCES auction_state (id);
