@@ -44,10 +44,10 @@ public class SettingsController {
             ) {
         Settings data = settings.orElse(null);
         ResponseEntity<Response> response = crudServiceSettings.handle(request.getMethod(), settingsRepository, id, data);
-        if(request.getMethod().equals("PUT")) {
+        if(request.getMethod().equals("PUT") && id.isPresent() && data != null) {
             Settings currentSettings = settingsRepository.findById(id.get()).orElse(null);
             settingsService.fillSettings(currentSettings);
-            if(currentSettings.getCurrentValue().getValue().equals(data.getCurrentValue().getValue())) {
+            if(currentSettings != null && currentSettings.getCurrentValue().getValue().equals(data.getCurrentValue().getValue())) {
                 return response;
             }
             Settings newSettings = (Settings)response.getBody().getData();

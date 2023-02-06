@@ -6,10 +6,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
-
-import java.security.PrivateKey;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Entity

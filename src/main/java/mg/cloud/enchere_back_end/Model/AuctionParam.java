@@ -18,8 +18,8 @@ public class AuctionParam {
     private List<AppUser> username;
     private List<AuctionState> auctionState;
     private List<Float> prix;
-    private Date startDate1;
-    private Date startDate2;
-    private Date endDate1;
-    private Date endDate2;
+    private Date startDateMin;
+    private Date startDateMax;
+    private Date endDateMin;
+    private Date endDateMax;
 }

@@ -12,12 +12,11 @@ import mg.cloud.enchere_back_end.Service.AuctionService;
 import mg.cloud.enchere_back_end.Service.CrudService;
 import mg.cloud.enchere_back_end.exceptions.InvalidValueException;
 import mg.cloud.enchere_back_end.request.AuctionInput;
+import mg.cloud.enchere_back_end.request.BidInput;
 import mg.cloud.enchere_back_end.response.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -49,15 +48,15 @@ public class AuctionController {
         this.crudServiceAuctionWithState = crudServiceAuctionWithState;
     }
 
-    @GetMapping("auctions/bid/{app_userid}&{bidid}&{amount}")
-    public ResponseEntity<?> bid(@PathVariable("app_userid") Long app_userid,@PathVariable("bidid") Long bidid,@PathVariable("amount") float amount) throws InvalidValueException {
-        AppUser user = app_userService.findById(app_userid);
+    @PostMapping("auctions/bid")
+    public ResponseEntity<?> bid(BidInput bidInput) {
+        AppUser user = app_userService.findById(bidInput.getAppUserId());
         AppUserFullBalance v_app_user = auctionService.getAppUserBalance(user.getId());
 
         BidHistory bid_history = new BidHistory();
         bid_history.setAppUser(user);
-        bid_history.setAuction(auctionService.findById(bidid));
-        bid_history.setAmount(amount);
+        bid_history.setAuction(auctionService.findById(bidInput.getBidId()));
+        bid_history.setAmount(bidInput.getAmount());
         bid_history.setDate(LocalDateTime.now());
         try{
             if(auctionService.verifyAuction(bid_history)) {
@@ -111,24 +110,25 @@ public class AuctionController {
     }
 
     @PostMapping("/auctions/search")
+    @SuppressWarnings("unchecked")
     public ResponseEntity<?> advancedSearch(
             @RequestBody AuctionParam auctionParams
 
-    ) throws ParseException {
+    ) {
         List<Category> category =  auctionParams.getCategory();
         List<AppUser> username = auctionParams.getUsername();
         List<AuctionState> status = auctionParams.getAuctionState();
         List<Float> prix = auctionParams.getPrix();
 
-        Date startDate1 = auctionParams.getStartDate1();
-        Date startDate2 = auctionParams.getStartDate2();
-        Date endDate1 = auctionParams.getEndDate1();
-        Date endDate2 = auctionParams.getEndDate2();
+        Date startDateMin = auctionParams.getStartDateMin();
+        Date startDateMax = auctionParams.getStartDateMax();
+        Date endDateMin = auctionParams.getEndDateMin();
+        Date endDateMax = auctionParams.getEndDateMax();
 
-        String req = auctionService.search(category,username,status, prix.get(0), prix.get(1),startDate1,startDate2,endDate1,endDate2,auctionParams.getDescription());
+        String req = auctionService.search(category,username,status, prix.get(0), prix.get(1),startDateMin,startDateMax,endDateMin,endDateMax,auctionParams.getDescription());
         System.out.println(req);
         Query query =  entityManager.createNativeQuery(req,AuctionWithState.class);
-        List<AuctionWithState> auctionList = query.getResultList();
+        List<AuctionWithState> auctionList = (List<AuctionWithState>) query.getResultList();
         auctionService.fillAcutions(auctionList);
         if(auctionList!=null){
             HashMap<String, Object> responseData = new HashMap<>();
@@ -138,9 +138,6 @@ public class AuctionController {
             Response error = new Response("no search found");
             return new ResponseEntity<>(error, HttpStatus.OK);
         }
-       // return new ResponseEntity<>(req, HttpStatus.OK);
-
-
     }
 
     @GetMapping("/auctionState")
@@ -195,22 +192,22 @@ public class AuctionController {
     }
 
     @GetMapping("/auctions/mised/{id}")
-    public ResponseEntity<?> getAuctionMised(
+    public ResponseEntity<?> getAuctionMissed(
             @PathVariable("id") Long id
 
     ){
         List<AuctionWithState> auctionList = auctionService.getAuctionListDesc(id);
         auctionService.fillLastMise(auctionList,id);
-        List<AuctionWithState> auctionListMised = new ArrayList<>();
+        List<AuctionWithState> auctionListMissed = new ArrayList<>();
         HashMap<String, Object> responseData = new HashMap<>();
         for ( AuctionWithState auction : auctionList) {
             if(auction.getTopBid()!= null){
-                auctionListMised.add(auction);
+                auctionListMissed.add(auction);
             }
         }
-        if(auctionList!=null){
-            System.out.println(auctionListMised);
-            responseData.put("data",auctionListMised);
+        if(auctionList.isEmpty()){
+            System.out.println(auctionListMissed);
+            responseData.put("data",auctionListMissed);
             return new ResponseEntity<>(responseData, HttpStatus.OK);
         }else{
             Response error = new Response("Auction is null");

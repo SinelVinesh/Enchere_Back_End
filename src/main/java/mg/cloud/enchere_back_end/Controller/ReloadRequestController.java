@@ -4,26 +4,20 @@ import jakarta.servlet.http.HttpServletRequest;
 import mg.cloud.enchere_back_end.Model.*;
 import mg.cloud.enchere_back_end.Repository.AppUserTokenRepository;
 import mg.cloud.enchere_back_end.Repository.ReloadRequestRepository;
-import mg.cloud.enchere_back_end.Service.*;
 import mg.cloud.enchere_back_end.exceptions.InvalidValueException;
 import mg.cloud.enchere_back_end.response.Response;
-import mg.cloud.enchere_back_end.Model.Auction;
 import mg.cloud.enchere_back_end.Model.ReloadRequest;
 import mg.cloud.enchere_back_end.Model.ReloadRequestStateHistory;
 import mg.cloud.enchere_back_end.Model.ReloadState;
-import mg.cloud.enchere_back_end.Repository.ReloadRequestRepository;
 import mg.cloud.enchere_back_end.Service.CrudService;
-import mg.cloud.enchere_back_end.response.Response;
 import mg.cloud.enchere_back_end.Service.ReloadRequestService;
 import mg.cloud.enchere_back_end.Service.ReloadRequestStateHistoryService;
 import mg.cloud.enchere_back_end.Service.Recharge_StateService;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.Optional;
 
 @RestController
@@ -68,7 +62,7 @@ public class ReloadRequestController {
         }
         ReloadRequest data = reloadRequest.orElse(null);
         ResponseEntity<Response> response= reloadRequestCrudService.handle(request.getMethod(), reloadRequestRepository, id, data);
-        if(request.getMethod().equals("POST") && response.getBody().getData() != null) {
+        if(request.getMethod().equals("POST") && response.getBody() != null && response.getBody().getData() != null) {
             ReloadRequest saved = (ReloadRequest) response.getBody().getData();
             ReloadRequestStateHistory reloadRequestStateHistory = new ReloadRequestStateHistory();
             reloadRequestStateHistory.setDate(saved.getDate());

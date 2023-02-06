@@ -18,11 +18,9 @@ import java.util.List;
 public class StatistiqueController {
 
     private final StatistiqueService statistiqueService;
-    private final AuctionService auctionService;
 
     public StatistiqueController(StatistiqueService statistiqueService, AuctionService auctionService) {
         this.statistiqueService = statistiqueService;
-        this.auctionService = auctionService;
     }
 
     @GetMapping("/turnover")
