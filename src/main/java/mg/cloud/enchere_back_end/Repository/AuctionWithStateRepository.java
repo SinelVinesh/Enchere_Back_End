@@ -17,4 +17,5 @@ public interface AuctionWithStateRepository extends JpaRepository<AuctionWithSta
 
     List<AuctionWithState> findAllByEndDateIsAfter(Timestamp time);
     Page<AuctionWithState> findAllByOrderByIdDesc(Pageable pageable);
+    Page<AuctionWithState> findAllByOrderByEndDateDesc(Pageable pageable);
 }

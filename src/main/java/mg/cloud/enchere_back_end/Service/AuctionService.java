@@ -4,7 +4,6 @@ import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
-import mg.cloud.enchere_back_end.Model.AuctionWithMise;
 import mg.cloud.enchere_back_end.Model.*;
 import mg.cloud.enchere_back_end.Repository.*;
 import mg.cloud.enchere_back_end.exceptions.InvalidValueException;
@@ -14,7 +13,6 @@ import mg.cloud.enchere_back_end.response.Response;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,10 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
-import java.awt.print.Pageable;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -134,6 +128,11 @@ public class AuctionService {
     }
     public List<BidHistory> getBidHistory(Long auctionId) {
         return bid_historyRepository.findByAuctionIdOrderByDateDesc(auctionId).orElse(null);
+    }
+    public boolean isUserAuction(Long userid,Long auctionid){
+        Auction auction = auctionRepository.isUserAuction(userid, auctionid).orElse(null);
+        return auction == null;
+
     }
 
     @SuppressWarnings("unchecked")
