@@ -13,11 +13,13 @@ import mg.cloud.enchere_back_end.Service.CrudService;
 import mg.cloud.enchere_back_end.exceptions.InvalidValueException;
 import mg.cloud.enchere_back_end.request.AuctionInput;
 import mg.cloud.enchere_back_end.response.Response;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
 import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 public class AuctionController {
@@ -49,26 +51,8 @@ public class AuctionController {
 
     @GetMapping("auctions/bid/{app_userid}&{bidid}&{amount}")
     public ResponseEntity<?> bid(@PathVariable("app_userid") Long app_userid,@PathVariable("bidid") Long bidid,@PathVariable("amount") float amount) throws InvalidValueException {
-//        auctionService.closedAuction();
         AppUser user = app_userService.findById(app_userid);
         AppUserFullBalance v_app_user = auctionService.getAppUserBalance(user.getId());
-//        if(v_app_user==null){
-//            v_app_user = new AppUserFullBalance();
-//            v_app_user.setUser(user);
-//            v_app_user.setMoney_can_use(user.getUsableBalance());
-//        }
-
-//        BidHistory bidHistorySecondToLast = auctionService.getSecondToLastBid(bidid);
-//        AppUser userSecondToLast = null;
-//        if(bidHistorySecondToLast!=null) {
-//            userSecondToLast = new AppUser();
-//            userSecondToLast.setId(bidHistorySecondToLast.getAppUser().getId());
-//            userSecondToLast.setUsername(bidHistorySecondToLast.getAppUser().getUsername());
-//            userSecondToLast.setEmail(bidHistorySecondToLast.getAppUser().getEmail());
-//            userSecondToLast.setPassword(bidHistorySecondToLast.getAppUser().getPassword());
-//            userSecondToLast.setBalance(bidHistorySecondToLast.getAppUser().getUsableBalance());
-//            userSecondToLast.setBalance(userSecondToLast.getBalance() + bidHistorySecondToLast.getAmount());
-//        }
 
         BidHistory bid_history = new BidHistory();
         bid_history.setAppUser(user);
