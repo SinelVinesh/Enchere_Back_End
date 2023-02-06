@@ -24,10 +24,10 @@ public class AdminToken {
     @Column(name = "value",nullable = false)
     private String value;
 
-    @Column(name = "expiration_date",nullable = false, columnDefinition = "TIMESTAMP")
+    @Column(name = "expiration_date",nullable = false, columnDefinition = "TIMESTAMPTZ")
     private LocalDateTime expirationDate;
 
-    @Column(name = "creation_date",nullable = false, columnDefinition = "TIMESTAMP")
+    @Column(name = "creation_date",nullable = false, columnDefinition = "TIMESTAMPTZ")
     private LocalDateTime creation_date;
 
     @ManyToOne

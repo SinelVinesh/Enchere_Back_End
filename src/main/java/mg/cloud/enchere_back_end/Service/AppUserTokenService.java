@@ -2,6 +2,7 @@ package mg.cloud.enchere_back_end.Service;
 
 import mg.cloud.enchere_back_end.Model.AppUser;
 import mg.cloud.enchere_back_end.Model.AppUserToken;
+import mg.cloud.enchere_back_end.Model.SettingsValueHistory;
 import mg.cloud.enchere_back_end.Repository.AppUserTokenRepository;
 import mg.cloud.enchere_back_end.exceptions.InvalidValueException;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -14,10 +15,12 @@ import java.time.LocalDateTime;
 public class AppUserTokenService {
     @Autowired
     private AppUserTokenRepository appUserTokenRepository;
+    @Autowired
+    private SettingsService settingsService;
 
     public AppUserToken generateToken(AppUser app_user) {
-        long duration = 3600;
-        LocalDateTime expiration = LocalDateTime.now().plusSeconds(duration);
+        SettingsValueHistory tokenDuration = settingsService.getCurrentValue(1L);
+        LocalDateTime expiration = LocalDateTime.now().plusSeconds(Integer.parseInt(tokenDuration.getValue()));
         String tokenString = app_user.getPassword() + app_user.getUsername() + expiration;
         String hash = DigestUtils.sha1Hex(tokenString);
         appUserTokenRepository.deleteAllByUserId(app_user.getId());

@@ -2,7 +2,9 @@ package mg.cloud.enchere_back_end.Service;
 
 import mg.cloud.enchere_back_end.Model.Admin;
 import mg.cloud.enchere_back_end.Model.AdminToken;
+import mg.cloud.enchere_back_end.Model.SettingsValueHistory;
 import mg.cloud.enchere_back_end.Repository.AdminTokenRepository;
+import mg.cloud.enchere_back_end.Repository.SettingsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -14,10 +16,12 @@ import java.time.LocalDateTime;
 public class AdminTokenService {
     @Autowired
     private AdminTokenRepository adminTokenRepository;
+    @Autowired
+    private SettingsService settingsService;
 
     public AdminToken generateToken(Admin admin) {
-            long duration = 3600;
-            LocalDateTime expiration = LocalDateTime.now().plusSeconds(duration);
+            SettingsValueHistory tokenDuration = settingsService.getCurrentValue(1L);
+            LocalDateTime expiration = LocalDateTime.now().plusSeconds(Integer.parseInt(tokenDuration.getValue()));
             String tokenString = admin.getPassword() + admin.getUsername() + expiration;
             String hash = DigestUtils.sha1Hex(tokenString);
             adminTokenRepository.deleteAllByAdminId(admin.getId());

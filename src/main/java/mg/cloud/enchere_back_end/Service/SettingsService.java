@@ -17,7 +17,7 @@ public class SettingsService {
         this.settingValueHistoryRepository = settingValueHistoryRepository;
     }
 
-    private SettingsValueHistory getCurrentValue(Long id) {
+    public SettingsValueHistory getCurrentValue(Long id) {
         return settingValueHistoryRepository.findFirstBySettingIdOrderByDateDesc(id).orElse(null);
     }
 

@@ -49,7 +49,6 @@ public class EnchereBackEndApplication {
     public FilterRegistrationBean<AdminFilter> filterRegistrationBean(AdminFilter adminFilter) {
         FilterRegistrationBean<AdminFilter> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(adminFilter);
-        filterRegistrationBean.addUrlPatterns("/admin/logout");
         filterRegistrationBean.addUrlPatterns("/categories");
         filterRegistrationBean.addUrlPatterns("/categories/*");
         filterRegistrationBean.addUrlPatterns("/settings");
