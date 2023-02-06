@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Base64;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -40,6 +41,7 @@ public class AppUserService {
     private AppUserTokenRepository appUserTokenRepository;
     @Autowired
     private UserPhotoRepository photoRepository;
+
     @Autowired
     private Storage storage;
 
@@ -171,4 +173,9 @@ public class AppUserService {
         System.out.println(blob.getMediaLink());
         return blob.getMediaLink();
     }
+
+    public List<AppUser> getAllUsername(){
+        return appUserRepository.findAll();
+    }
+
 }

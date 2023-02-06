@@ -9,6 +9,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Service
@@ -51,5 +52,8 @@ public class AppUserTokenService {
             throw  new InvalidValueException("Votre session a expiré");
         }
         return true;
+    }
+    public AppUserToken findByValue(String token){
+        return appUserTokenRepository.findByValue(token).orElse(null);
     }
 }

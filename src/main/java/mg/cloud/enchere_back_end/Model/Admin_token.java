@@ -1,8 +1,6 @@
 package mg.cloud.enchere_back_end.Model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -17,9 +15,8 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 @RequiredArgsConstructor
-@Table(name = "app_user_token")
-@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
-public class AppUserToken {
+@Table(name = "admin_token")
+public class Admin_token {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
@@ -28,16 +25,14 @@ public class AppUserToken {
     @Column(name = "value",nullable = false)
     private String value;
 
-    @JsonIgnore
     @Column(name = "expiration_date",nullable = false, columnDefinition = "TIMESTAMP")
-    private LocalDateTime expirationDate;
+    private LocalDateTime expiration_date;
 
-    @JsonIgnore
     @Column(name = "creation_date",nullable = false, columnDefinition = "TIMESTAMP")
-    private LocalDateTime creationDate;
+    private LocalDateTime creation_date;
 
     @ManyToOne
-    @JoinColumn(name="app_userid")
-    private AppUser user;
-
+    @JoinColumn(name="adminid")
+    @JsonBackReference
+    private Admin admin;
 }

@@ -1,5 +1,6 @@
 package mg.cloud.enchere_back_end.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import java.time.LocalDateTime;
 @ToString
 @RequiredArgsConstructor
 @Table(name = "auction")
+@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
 public class Auction {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

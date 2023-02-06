@@ -1,6 +1,7 @@
 package mg.cloud.enchere_back_end.Model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Table(name = "settings_value_history")
+@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
 public class SettingsValueHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
