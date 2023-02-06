@@ -4,12 +4,12 @@ import mg.cloud.enchere_back_end.Model.Admin;
 import mg.cloud.enchere_back_end.Model.AdminToken;
 import mg.cloud.enchere_back_end.Model.SettingsValueHistory;
 import mg.cloud.enchere_back_end.Repository.AdminTokenRepository;
-import mg.cloud.enchere_back_end.Repository.SettingsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.apache.commons.codec.digest.DigestUtils;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
+import java.time.Instant;
 
 
 @Service
@@ -21,7 +21,7 @@ public class AdminTokenService {
 
     public AdminToken generateToken(Admin admin) {
             SettingsValueHistory tokenDuration = settingsService.getCurrentValue(1L);
-            LocalDateTime expiration = LocalDateTime.now().plusSeconds(Integer.parseInt(tokenDuration.getValue()));
+            Timestamp expiration = Timestamp.from(Instant.now().plusSeconds(Integer.parseInt(tokenDuration.getValue())));
             String tokenString = admin.getPassword() + admin.getUsername() + expiration;
             String hash = DigestUtils.sha1Hex(tokenString);
             adminTokenRepository.deleteAllByAdminId(admin.getId());
@@ -29,23 +29,19 @@ public class AdminTokenService {
             token.setAdmin(admin);
             token.setValue(hash);
             token.setExpirationDate(expiration);
-            token.setCreation_date(LocalDateTime.now());
+            token.setCreation_date(Timestamp.from(Instant.now()));
             adminTokenRepository.save(token);
             return adminTokenRepository.save(token);
     }
 
     public boolean authenticate(String token) {
         AdminToken data = adminTokenRepository.findByValue(token).orElse(null);
-        if(data != null && data.getExpirationDate().isAfter(LocalDateTime.now())) {
-            return true;
-        } else {
-            return false;
-        }
+        return data != null && data.getExpirationDate().after(Timestamp.from(Instant.now()));
     }
 
     public boolean removeToken(String token) {
         try {
-            Long deleted = adminTokenRepository.deleteByValue(token);
+            adminTokenRepository.deleteByValue(token);
             return true;
         } catch (Exception e) {
             e.printStackTrace();

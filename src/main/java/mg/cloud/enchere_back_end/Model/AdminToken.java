@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 @Entity
 @Getter
@@ -25,10 +25,10 @@ public class AdminToken {
     private String value;
 
     @Column(name = "expiration_date",nullable = false, columnDefinition = "TIMESTAMP")
-    private LocalDateTime expirationDate;
+    private Timestamp expirationDate;
 
     @Column(name = "creation_date",nullable = false, columnDefinition = "TIMESTAMP")
-    private LocalDateTime creation_date;
+    private Timestamp creation_date;
 
     @ManyToOne
     @JoinColumn(name="adminid")
